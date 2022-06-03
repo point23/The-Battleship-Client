@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class GridsGenerator : MonoBehaviour
+public class GridsHandler : MonoBehaviour
 {
     public GameObject gridTemplate;
-
     public Transform parentTrans;
-
     public int rows;
-    // Start is called before the first frame update
+    
+    public Vector2 GridSize => GetComponent<GridLayoutGroup>().cellSize;
+
     public void Start()
     {
         for (var i = 0; i < rows; i++)
@@ -19,11 +20,5 @@ public class GridsGenerator : MonoBehaviour
                 GameObject.Instantiate(gridTemplate, parentTrans);
             }
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

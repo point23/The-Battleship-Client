@@ -1,19 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Utilities;
 
 public class DragDropItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
-    public Transform transform;
-    void Start()
-    {
-        transform = GetComponent<Transform>();
-    }
+    private GridsHandler GridsHandler => FindObjectOfType<GridsHandler>();
+    private Transform _transform;
+    private CanvasGroup _canvasGroup;
+    private List<int> _occupiedGrids;
+    private readonly Diastimeter _diastimeter = new Diastimeter();
 
-    void Update()
+    public void Start()
     {
-        
+        _transform = GetComponent<Transform>();
+        _canvasGroup = GetComponent<CanvasGroup>();
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -23,16 +26,53 @@ public class DragDropItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        
+        _diastimeter.Begin(eventData.position);
+        _canvasGroup.alpha = 0.6f;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        
+        _canvasGroup.alpha = 1f;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        transform.position += new Vector3(eventData.delta.x, eventData.delta.y, 0);
+        var delta = _diastimeter.End(eventData.position);
+        var normalizedDelta = NormalizedDelta(delta);
+        if (TryMove(normalizedDelta))
+        {
+            Debug.Log("[DragDropItem] normalized delta: " + normalizedDelta);
+            Debug.Log("[DragDropItem] item being moved!");
+            _diastimeter.Begin(eventData.position);
+        }
+    }
+
+    private bool TryMove(Vector2 delta)
+    {
+        _transform.localPosition += (Vector3) delta;
+        return delta.sqrMagnitude > 0;
+    }
+    
+    private Vector2 NormalizedDelta(Vector2 delta)
+    {
+        var normalizedDelta = Vector2.zero;
+        if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+        {
+            var gridSizeX = GridsHandler.GridSize.x;
+            if (Mathf.Abs(delta.x) >= 0.5 * gridSizeX)
+            {
+                normalizedDelta.x = (delta.x > 0)? gridSizeX : -gridSizeX;
+            }
+        }
+        else if (Mathf.Abs(delta.y) > 0)
+        {
+            var gridSizeY = GridsHandler.GridSize.y;
+            if (Mathf.Abs(delta.y) >= 0.5 * gridSizeY)
+            {
+                normalizedDelta.y = (delta.y > 0)? gridSizeY : -gridSizeY;
+            }
+        }
+
+        return normalizedDelta;
     }
 }
