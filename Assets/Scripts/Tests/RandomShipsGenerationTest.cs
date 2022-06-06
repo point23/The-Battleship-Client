@@ -3,6 +3,7 @@ using System.IO;
 using DataTypes;
 using GameBase;
 using UnityEngine;
+using Utilities;
 
 namespace Tests
 {
@@ -19,10 +20,15 @@ namespace Tests
             var boundingBox = new Vector2(1, 2);
             var bottomLeft = new Vector2(0, 0);
             var grids = new List<Vector2>() { new Vector2(0,0), new Vector2(0,1)};
-            var shipData = new ShipData(boundingBox, bottomLeft, grids);
-            var json = shipData.ToJson();
+
+            var shipsDataList = new List<ShipData>();
+            for (var i = 0; i < 5; i++)
+            {
+                shipsDataList.Add(new ShipData(boundingBox, bottomLeft, grids));
+            }
             
-            File.WriteAllText(Application.dataPath + "/Data/Test/" + "ships_data_test.json", json);
+            var ShipsDataTestPath = Application.dataPath + "/Data/Test/ships_data_test.json";
+            FileHandler.SaveToJSON(shipsDataList, ShipsDataTestPath);
         }
     }
 }

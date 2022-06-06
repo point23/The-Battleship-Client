@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DataTypes
 {
+    [Serializable]
     public struct ShipData
     {
         public Vector2 boundingBox;
@@ -14,11 +16,6 @@ namespace DataTypes
             this.boundingBox = boundingBox;
             this.bottomLeft = bottomLeft;
             this.grids = grids;
-        }
-
-        public string ToJson()
-        {
-            return JsonUtility.ToJson(this);
         }
     }
 }
