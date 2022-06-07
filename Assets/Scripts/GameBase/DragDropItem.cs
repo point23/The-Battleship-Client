@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -43,7 +41,6 @@ namespace GameBase
             var normalizedDelta = NormalizedDelta(delta);
             if (TryMove(normalizedDelta))
             {
-                Debug.Log("[DragDropItem] item being moved!");
                 _diastimeter.Begin(eventData.position);
             }
         }
@@ -59,7 +56,7 @@ namespace GameBase
             var normalizedDelta = Vector2.zero;
             if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
             {
-                var gridSizeX = GridsHandler.GridSize.x;
+                var gridSizeX = AppManager.Instance.CellSize.x;
                 if (Mathf.Abs(delta.x) >= 0.5 * gridSizeX)
                 {
                     normalizedDelta.x = (delta.x > 0)? gridSizeX : -gridSizeX;
@@ -67,7 +64,7 @@ namespace GameBase
             }
             else if (Mathf.Abs(delta.y) > 0)
             {
-                var gridSizeY = GridsHandler.GridSize.y;
+                var gridSizeY = AppManager.Instance.CellSize.y;
                 if (Mathf.Abs(delta.y) >= 0.5 * gridSizeY)
                 {
                     normalizedDelta.y = (delta.y > 0)? gridSizeY : -gridSizeY;

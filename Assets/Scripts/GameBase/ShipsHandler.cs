@@ -7,9 +7,21 @@ namespace GameBase
 {
     public class ShipsHandler : MonoBehaviour
     {
-        public void Generate(List<ShipData> dataList)
+        public GameObject shipTemplate;
+        public Transform shipsTransform;
+
+        public void GenerateShips(List<ShipData> dataList)
         {
-        
+            foreach (var data in dataList)
+            {
+                GenerateShip(data);
+            }
+        }
+
+        public void GenerateShip(ShipData data)
+        {
+            var go = Instantiate(shipTemplate, shipsTransform);
+            go.GetComponent<Ship>().Render(data);
         }
     }
    

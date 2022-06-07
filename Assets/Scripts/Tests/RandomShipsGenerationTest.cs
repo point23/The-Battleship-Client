@@ -13,22 +13,13 @@ namespace Tests
     /// </summary>
     public class RandomShipsGenerationTest : MonoBehaviour
     {
-        public ShipsHandler ShipsHandler;
-        
+        public ShipsHandler shipsHandler;
+
         public void Start()
         {
-            var boundingBox = new Vector2(1, 2);
-            var bottomLeft = new Vector2(0, 0);
-            var grids = new List<Vector2>() { new Vector2(0,0), new Vector2(0,1)};
-
-            var shipsDataList = new List<ShipData>();
-            for (var i = 0; i < 5; i++)
-            {
-                shipsDataList.Add(new ShipData(boundingBox, bottomLeft, grids));
-            }
-            
             var ShipsDataTestPath = Application.dataPath + "/Data/Test/ships_data_test.json";
-            FileHandler.SaveToJSON(shipsDataList, ShipsDataTestPath);
+            var shipsDataList = FileHandler.ReadListFromJSON<ShipData>(ShipsDataTestPath);
+            shipsHandler.GenerateShips(shipsDataList);
         }
     }
 }

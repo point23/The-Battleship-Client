@@ -7,14 +7,14 @@ namespace DataTypes
     [Serializable]
     public struct ShipData
     {
-        public Vector2 boundingBox;
-        public Vector2 bottomLeft;
-        public List<Vector2> grids;
+        public Vector2Int boundingBox;
+        public Vector2Int topLeft;
+        public List<Vector2Int> grids;
         
-        public ShipData(Vector2 boundingBox, Vector2 bottomLeft, List<Vector2> grids)
+        public ShipData(Vector2Int boundingBox, Vector2Int topLeft, List<Vector2Int> grids)
         {
             this.boundingBox = boundingBox;
-            this.bottomLeft = bottomLeft;
+            this.topLeft = topLeft;
             this.grids = grids;
         }
     }

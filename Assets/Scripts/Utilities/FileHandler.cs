@@ -27,9 +27,7 @@ namespace Utilities
             }
 
             var res = JsonHelper.FromJson<T> (content).ToList ();
-
             return res;
-
         }
 
         public static T ReadFromJSON<T> (string path) {
