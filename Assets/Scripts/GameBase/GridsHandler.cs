@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DataTypes;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -26,14 +27,16 @@ namespace GameBase
                 for (var j = 0; j < rows; j++)
                 {
                     var go = Instantiate(gridTemplate, layoutGroup.transform);
-                    grids.Add(go.GetComponent<Grid>());
+                    var grid = go.GetComponent<Grid>();
+                    grid.data = new GridData(new Vector2Int(i, j));
+                    grids.Add(grid);
                 }
             }
         }
 
         public Vector3 GetPosOfGrid(Vector2Int grid)
         {
-            var index = grid.x * rows + grid.y;
+            var index = grid.y * rows + grid.x;
             if (index < grids.Count && index > 0)
             {
                 return grids[index].transform.localPosition;

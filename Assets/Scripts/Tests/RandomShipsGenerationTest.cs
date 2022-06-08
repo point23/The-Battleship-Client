@@ -3,6 +3,7 @@ using System.IO;
 using DataTypes;
 using GameBase;
 using UnityEngine;
+using UnityEngine.UI;
 using Utilities;
 
 namespace Tests
@@ -14,8 +15,14 @@ namespace Tests
     public class RandomShipsGenerationTest : MonoBehaviour
     {
         public ShipsHandler shipsHandler;
-
+        public Button btnGenerateShip;
+        
         public void Start()
+        {
+            btnGenerateShip.onClick.AddListener(GenerateShip);
+        }
+
+        private void GenerateShip()
         {
             var ShipsDataTestPath = Application.dataPath + "/Data/Test/ships_data_test.json";
             var shipsDataList = FileHandler.ReadListFromJSON<ShipData>(ShipsDataTestPath);
