@@ -8,10 +8,8 @@ using Utilities;
 
 namespace Tests
 {
-    /// <summary>
-    /// test_local_version‘s ShipsHandler will read the ships_data.json file and generate
-    /// user's ships by it and put them in random positions that is available
-    /// </summary>
+    // test_local_version‘s ShipsHandler will read the ships_data.json file and generate
+    // user's ships by it and put them in random positions that is available
     public class RandomShipsGenerationTest : MonoBehaviour
     {
         public ShipsHandler shipsHandler;

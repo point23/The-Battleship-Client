@@ -55,23 +55,17 @@ namespace GameBase
             var topLeftPos = AppManager.Instance.gridsHandler.GetPosOfGrid(TopLeft);
             var bottomRight = TopLeft + BoundingBox - Vector2Int.one;
             var bottomRightPos = AppManager.Instance.gridsHandler.GetPosOfGrid(bottomRight);
-            
             // DebugLogPos(bottomRight, topLeftPos, bottomRightPos);
             transform.localPosition = (1 / 2f) * (topLeftPos + bottomRightPos);
         }
 
         private void RenderGrids()
         {
-            foreach (var grid in GridList)
-            {
-                Debug.Log(grid.ToJson());
-                grid.Render(Grids.Contains(grid.Pos));
-            }
+            GridList.ForEach(grid => grid.Render(isActive: Grids.Contains(grid.Pos))); 
         }
 
         private void InstantiateGridObjects()
         {
-            layoutGroup.constraintCount = BoundingBox.x;
             for (var i = 0; i < BoundingBox.x; i++)
             {
                 for (var j = 0; j < BoundingBox.y; j++)
