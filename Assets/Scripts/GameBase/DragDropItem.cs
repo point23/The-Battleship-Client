@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Dynamic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using Utilities;
 
@@ -13,6 +15,8 @@ namespace GameBase
         private List<int> _occupiedGrids;
         private readonly Diastimeter _diastimeter = new Diastimeter();
 
+        public UnityEvent<Vector2Int> OnDraggedEvent;
+        
         public void Start()
         {
             _transform = GetComponent<Transform>();
@@ -39,6 +43,7 @@ namespace GameBase
         {
             var delta = _diastimeter.End(eventData.position);
             var normalizedDelta = NormalizedDelta(delta);
+            OnDraggedEvent.Invoke(GridDelta(normalizedDelta));
             if (TryMove(normalizedDelta))
             {
                 _diastimeter.Begin(eventData.position);
@@ -49,6 +54,12 @@ namespace GameBase
         {
             _transform.localPosition += (Vector3) delta;
             return delta.sqrMagnitude > 0;
+        }
+
+        private Vector2Int GridDelta(Vector2 posDelta)
+        { 
+            var delta = posDelta / AppManager.Instance.CellSize;
+            return new Vector2Int((int) delta.x, (int) delta.y);
         }
         
         private Vector2 NormalizedDelta(Vector2 delta)

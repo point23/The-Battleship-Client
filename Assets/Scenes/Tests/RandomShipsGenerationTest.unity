@@ -990,7 +990,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e61c57df597a7c843b8def797d0f8c10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shipTemplate: {fileID: 4321285433120922893, guid: 1fd763d99d8912e4c894256891de2740, type: 3}
+  shipTemplate: {fileID: 2894138148056372003, guid: 1fd763d99d8912e4c894256891de2740, type: 3}
   shipsTransform: {fileID: 546155507}
 --- !u!1 &2143630551
 GameObject:
