@@ -13,7 +13,7 @@ namespace GameBase
         [HideInInspector]
         public GridData data;
 
-        public Vector2Int Pos => data.Pos;
+        public Coord Pos => data.pos;
         
         private Image GridImage => GetComponentInChildren<Image>();
         

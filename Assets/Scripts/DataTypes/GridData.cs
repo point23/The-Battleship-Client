@@ -1,21 +1,22 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace DataTypes
 {
     [Serializable]
     public class GridData
     {
-        public Vector2Int Pos;
+        public Coord pos;
 
-        public GridData(Vector2Int pos)
+        public GridData(Coord pos)
         {
-            Pos = pos;
+            this.pos = pos;
         }
         
         public GridData(int x, int y)
         {
-            Pos = new Vector2Int(x, y);
+            pos = new Coord(x, y);
         }
 
         public string ToJson()

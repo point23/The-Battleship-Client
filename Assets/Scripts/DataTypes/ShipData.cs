@@ -8,16 +8,14 @@ namespace DataTypes
     [Serializable]
     public struct ShipData
     {
-        public Vector2Int boundingBox;
-        public Vector2Int topLeft;
-        public List<Vector2Int> grids;
+        public BoundingBox bounds;
+        public Coord topLeft;
+        public List<Coord> grids;
 
-        private int MaxBound => Math.Max(boundingBox.x, boundingBox.y);
-        private Vector2 Center => 0.5f * (MaxBound - 1) * Vector2.one;
-
-        public ShipData(Vector2Int boundingBox, Vector2Int topLeft, List<Vector2Int> grids)
+        public Vector2 Center => new(0.5f * (bounds.Max - 1), 0.5f * (bounds.Max - 1));
+        public ShipData(BoundingBox bounds, Coord topLeft, List<Coord> grids)
         {
-            this.boundingBox = boundingBox;
+            this.bounds = bounds;
             this.topLeft = topLeft;
             this.grids = grids;
         }
@@ -57,46 +55,45 @@ namespace DataTypes
         
         public void Rotate()
         {
-            RotateBoundingBox();
+            var delta = ResetTopLeft();
             RotateGrids();
+            SettleGridsByTopLeftDelta(delta);
+            RotateBoundingBox();
         }
 
         private void RotateGrids()
         {
-            CoordTransformation();
-            for (var i = 0; i < grids.Count; i++)
+            foreach (var grid in grids)
             {
-                grids[i] = RotateGrid(grids[i], Center);
+                grid.RotateAroundClockwise(Center, 90);
             }
-            CoordTransformation();
         }
 
         private void RotateBoundingBox()
         {
-            boundingBox = new Vector2Int(boundingBox.y, boundingBox.x);
+            bounds.Swap();
         }
 
-        public Vector2Int RotateGrid(Vector2Int point, Vector2 center)
+        private void SettleGridsByTopLeftDelta(Vector2 delta)
         {
-            var result = RotatePoint((Vector2) point, center);
-            return new Vector2Int((int) (result.x + 0.1), (int) (result.y + 0.1));
-        }
-
-        private void CoordTransformation()
-        {
+            Debug.Log("[ShipData] delta: " + delta);
             for (var i = 0; i < grids.Count; i++)
             {
-                grids[i] = new Vector2Int(grids[i].y, grids[i].x);
+                grids[i] -= delta;
             }
         }
 
-        private Vector2 RotatePoint(Vector2 point, Vector2 center)
+        private Vector2 ResetTopLeft()
         {
-            var delta = center - point;
-            Vector2 delta1 = Quaternion.Euler(0, 0, -90) * delta;
-            return (center + delta1);
+            if (bounds.IsSquare()) return Vector2Int.zero;
+            var oldBottomLeft = new Coord(bounds.height - 1, 0);
+            oldBottomLeft.RotateAroundClockwise(Center, 90);
+            var delta = oldBottomLeft.CalculateDelta(Coord.zero);
+            Debug.Log("[ShipData] oldBottomLeft: " + oldBottomLeft);
+            Debug.Log("[ShipData] delta: " + delta);
+            return delta;
         }
-
+        
         public string ToJson()
         {
             return JsonUtility.ToJson(this);

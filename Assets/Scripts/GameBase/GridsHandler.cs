@@ -13,9 +13,16 @@ namespace GameBase
     {
         public GameObject gridTemplate;
         public GridLayoutGroup layoutGroup;
-        public int rows;
+        public int rows = 9;
+        public int cols = 9;
         public List<Grid> grids;
         private Vector2 CellSize => layoutGroup.cellSize;
+        
+        //  *________
+        // |__|__|__|
+        // |__|__|__|
+        // |__|__|__|
+        private Vector3 TopLeftPos => grids.First().transform.localPosition;
         
         public void Awake()
         {
@@ -24,28 +31,27 @@ namespace GameBase
             
             for (var i = 0; i < rows; i++)
             {
-                for (var j = 0; j < rows; j++)
+                for (var j = 0; j < cols; j++)
                 {
-                    var go = Instantiate(gridTemplate, layoutGroup.transform);
-                    var grid = go.GetComponent<Grid>();
-                    grid.data = new GridData(new Vector2Int(i, j));
+                    var grid = Instantiate(gridTemplate, layoutGroup.transform).GetComponent<Grid>();
+                    grid.data = new GridData(i, j);
                     grids.Add(grid);
                 }
             }
         }
 
-        public Vector3 GetPosOfGrid(Vector2Int grid)
+        public Vector3 GetPosOfGrid(Coord coord)
         {
-            var index = grid.y * rows + grid.x;
+            var index = coord.ToIndex(cols);
+            // Debug.Log("[GridsHandler] coord: " + coord.ToJson() + ", index: " + index);
             if (index < grids.Count && index > 0)
             {
                 return grids[index].transform.localPosition;
             }
-            
-            var topLeft = grids.First().transform.localPosition;
-            var offset = (Vector2) (grid - Vector2Int.one);
-            var direction = new Vector2(offset.x, -offset.y) * CellSize;
-            var pos = topLeft + (Vector3) direction;
+
+            var delta = coord.CalculateDelta(Coord.one);
+            var displacement = new Vector2(delta.x, -delta.y) * CellSize;
+            var pos = TopLeftPos + (Vector3) displacement;
             return pos;
         }
     }

@@ -17,10 +17,10 @@ namespace GameBase
         public GridLayoutGroup layoutGroup;
         public GameObject shipGridTemplate;
 
-        public Vector2Int BoundingBox => data.boundingBox;
-        public Vector2Int TopLeft => data.topLeft;
-        public List<Vector2Int> Grids => data.grids;
-        public int GridsCount => BoundingBox.x * BoundingBox.y;
+        public BoundingBox Bounds => data.bounds;
+        public Coord TopLeft => data.topLeft;
+        public List<Coord> Grids => data.grids;
+        public int GridsCount => Bounds.height * Bounds.width;
         public List<Grid> GridList => layoutGroup.GetComponentsInChildren<Grid>().ToList();
 
         public void Start()
@@ -35,6 +35,7 @@ namespace GameBase
             SetPosition();
             SetLayoutGroup();
             InstantiateGridObjects();
+            SetGridCoords();
             RenderGrids();
         }
 
@@ -42,36 +43,55 @@ namespace GameBase
         {
             SetLayoutGroup();
             SetPosition();
+            SetGridCoords();
             RenderGrids();
-        }
-
-        private void SetLayoutGroup()
-        {
-            layoutGroup.constraintCount = BoundingBox.x;
         }
 
         private void SetPosition()
         {
             var topLeftPos = AppManager.Instance.gridsHandler.GetPosOfGrid(TopLeft);
-            var bottomRight = TopLeft + BoundingBox - Vector2Int.one;
-            var bottomRightPos = AppManager.Instance.gridsHandler.GetPosOfGrid(bottomRight);
-            // DebugLogPos(bottomRight, topLeftPos, bottomRightPos);
+            var bottomRightCoord = TopLeft + Bounds.ToVector2() - Vector2.one;
+            var bottomRightPos = AppManager.Instance.gridsHandler.GetPosOfGrid(bottomRightCoord);
+            
+            // DebugLogPos(bottomRightCoord, topLeftPos, bottomRightPos);
             transform.localPosition = (1 / 2f) * (topLeftPos + bottomRightPos);
         }
 
+        private void SetLayoutGroup()
+        {
+            layoutGroup.constraintCount = Bounds.width;
+        }
+        
         private void RenderGrids()
         {
-            GridList.ForEach(grid => grid.Render(isActive: Grids.Contains(grid.Pos))); 
+            Debug.Log("[Ship] ship data:" + data.ToJson());
+            var occupiedGrids = Grids.Select(gridCoord => gridCoord.ToIndex(Bounds.width)).ToList();
+            foreach (var grid in GridList)
+            {
+                grid.Render(isActive: occupiedGrids.Contains(grid.Pos.ToIndex(Bounds.width)));
+            }
         }
 
         private void InstantiateGridObjects()
         {
-            for (var i = 0; i < BoundingBox.x; i++)
+            for (var row = 0; row < Bounds.height; row++)
             {
-                for (var j = 0; j < BoundingBox.y; j++)
+                for (var col = 0; col < Bounds.width; col++)
                 {
-                    var go = Instantiate(shipGridTemplate, layoutGroup.transform);
-                    go.GetComponent<Grid>().data = new GridData(i, j);
+                    Instantiate(shipGridTemplate, layoutGroup.transform).GetComponent<Grid>();
+                }
+            }
+        }
+        
+        private void SetGridCoords()
+        {
+            for (var row = 0; row < Bounds.height; row++)
+            {
+                for (var col = 0; col < Bounds.width; col++)
+                {
+                    var coord = new Coord(row, col);
+                    // Debug.Log("[Ship] grid coord: " + coord.ToJson() + ", index: " + coord.ToIndex(Bounds.width));
+                    GridList[coord.ToIndex(Bounds.width)].data = new GridData(coord);
                 }
             }
         }
@@ -101,13 +121,13 @@ namespace GameBase
 
         #region Debug Helpers
 
-        private void DebugLogPos(Vector2Int bottomRight, Vector3 topLeftPos, Vector3 bottomRightPos)
+        private void DebugLogPos(Coord bottomRight, Vector3 topLeftPos, Vector3 bottomRightPos)
         {
-            Debug.Log("topLeft: " + TopLeft);
-            Debug.Log("bottomRight: " + bottomRight);
-            Debug.Log("topLeftGridPos: " + topLeftPos);
-            Debug.Log("bottomRightPos: " + bottomRightPos);
-            Debug.Log("position: " + transform.localPosition);
+            Debug.Log("[Ship] top left coord: " + TopLeft.ToJson());
+            Debug.Log("[Ship] bottom right coord: " + bottomRight.ToJson());
+            Debug.Log("[Ship] top left grid pos: " + topLeftPos);
+            Debug.Log("[Ship] bottom right pos: " + bottomRightPos);
+            Debug.Log("[Ship] local position: " + transform.localPosition);
         }
 
         #endregion

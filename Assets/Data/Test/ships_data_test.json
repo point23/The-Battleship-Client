@@ -1,13 +1,13 @@
 {
     "list": [
         {
-            "boundingBox": {
-                "x": 2,
-                "y": 2
+            "bounds": {
+                "width": 2,
+                "height": 2
             },
             "topLeft": {
-                "x": 1,
-                "y": 1
+                "x": 2,
+                "y": 2
             },
             "grids": [
                 {
@@ -25,9 +25,9 @@
             ]
         },
         {
-            "boundingBox": {
-                "x": 1,
-                "y": 2
+            "bounds": {
+                "width": 2,
+                "height": 1
             },
             "topLeft": {
                 "x": 6,
