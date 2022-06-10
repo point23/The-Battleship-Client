@@ -43,11 +43,10 @@ namespace GameBase
         {
             var delta = _diastimeter.End(eventData.position);
             var normalizedDelta = NormalizedDelta(delta);
+            if (!TryMove(normalizedDelta)) return;
+            
             OnDraggedEvent.Invoke(GridDelta(normalizedDelta));
-            if (TryMove(normalizedDelta))
-            {
-                _diastimeter.Begin(eventData.position);
-            }
+            _diastimeter.Begin(eventData.position);
         }
 
         private bool TryMove(Vector2 delta)

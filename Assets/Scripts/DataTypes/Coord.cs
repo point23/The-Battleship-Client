@@ -1,5 +1,4 @@
 ﻿using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace DataTypes
@@ -45,7 +44,7 @@ namespace DataTypes
         {
             var delta = center - this.ToVector2();
             Vector2 deltaRotated = Quaternion.Euler(0, 0, angle) * delta;
-            Debug.Log("[Coord] coord" + ToJson() + ", center: " + center + ", delta: " + delta + ", delta1: " + deltaRotated);
+            // Debug.Log("[Coord] coord" + ToJson() + ", center: " + center + ", delta: " + delta + ", delta1: " + deltaRotated);
             this.Value = (center + deltaRotated);
         }
 

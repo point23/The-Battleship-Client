@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using DataTypes;
-using TreeEditor;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 

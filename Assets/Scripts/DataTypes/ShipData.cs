@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace DataTypes
@@ -35,7 +34,7 @@ namespace DataTypes
         //  |            |                             |            |
         //  *      ___  (1,1)                          *     ___    *
         // result -= center;
-            
+        
         //                                       *      ___  (0,0)
         //                                       |            | 
         // (0,0)   ___  (0,1)                    | (0.5, 0.5) |     *
@@ -90,10 +89,10 @@ namespace DataTypes
             oldBottomLeft.RotateAroundClockwise(Center, 90);
             var delta = oldBottomLeft.CalculateDelta(Coord.zero);
             Debug.Log("[ShipData] oldBottomLeft: " + oldBottomLeft);
-            Debug.Log("[ShipData] delta: " + delta);
+            Debug.Log("[ShipData] topLeft delta: " + delta);
             return delta;
         }
-        
+
         public string ToJson()
         {
             return JsonUtility.ToJson(this);

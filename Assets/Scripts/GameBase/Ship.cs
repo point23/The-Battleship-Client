@@ -108,7 +108,16 @@ namespace GameBase
         
         private void OnDragged(Vector2Int delta)
         {
-            data.topLeft += delta;
+            Debug.Log("[Ship] on dragged delta:" + delta);
+            // example: 
+            // delta in world space (1,  1)
+            // delta in coords      (-1, 0)
+            data.topLeft += HandleWorldDelta(delta);
+        }
+
+        private Vector2Int HandleWorldDelta(Vector2Int delta)
+        {
+            return new Vector2Int(-delta.y, delta.x);
         }
 
         private void OnRotated()
