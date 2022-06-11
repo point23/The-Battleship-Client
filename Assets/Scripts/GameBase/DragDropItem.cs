@@ -9,7 +9,7 @@ namespace GameBase
 {
     public class DragDropItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
-        private GridsHandler GridsHandler => FindObjectOfType<GridsHandler>();
+        private Board Board => FindObjectOfType<Board>();
         private Transform _transform;
         private CanvasGroup _canvasGroup;
         private List<int> _occupiedGrids;
@@ -22,12 +22,12 @@ namespace GameBase
             _transform = GetComponent<Transform>();
             _canvasGroup = GetComponent<CanvasGroup>();
         }
-
+        
         public void OnPointerDown(PointerEventData eventData)
         {
             
         }
-
+        
         public void OnBeginDrag(PointerEventData eventData)
         {
             _diastimeter.Begin(eventData.position);
@@ -45,7 +45,7 @@ namespace GameBase
             var normalizedDelta = NormalizedDelta(delta);
             if (!TryMove(normalizedDelta)) return;
             
-            OnDraggedEvent.Invoke(GridDelta(normalizedDelta));
+            OnDraggedEvent.Invoke(CoordDelta(normalizedDelta));
             _diastimeter.Begin(eventData.position);
         }
 
@@ -55,13 +55,13 @@ namespace GameBase
             return delta.sqrMagnitude > 0;
         }
 
-        private Vector2Int GridDelta(Vector2 posDelta)
+        private static Vector2Int CoordDelta(Vector2 posDelta)
         { 
             var delta = posDelta / AppManager.Instance.CellSize;
             return new Vector2Int((int) delta.x, (int) delta.y);
         }
         
-        private Vector2 NormalizedDelta(Vector2 delta)
+        private static Vector2 NormalizedDelta(Vector2 delta)
         {
             var normalizedDelta = Vector2.zero;
             if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))

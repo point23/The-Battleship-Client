@@ -2,18 +2,25 @@ using System.Collections.Generic;
 using System.Linq;
 using DataTypes;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace GameBase
 {
-    public class GridsHandler : MonoBehaviour
+    public class Board : MonoBehaviour
     {
         public GameObject gridTemplate;
         public GridLayoutGroup layoutGroup;
         public int rows = 9;
         public int cols = 9;
         public List<Grid> grids;
-        private Vector2 CellSize => layoutGroup.cellSize;
+        private Vector2 CellSize
+        {
+            get => layoutGroup.cellSize;
+            set => layoutGroup.cellSize = value;
+        }
+
+        public UnityEvent<GridData> onGridClickedEvent;
         
         //  *________
         // |__|__|__|
@@ -23,21 +30,25 @@ namespace GameBase
         
         public void Awake()
         {
-            layoutGroup.cellSize = AppManager.Instance.CellSize;
+            CellSize = AppManager.Instance.CellSize;
             grids = new List<Grid>();
+        }
+
+        public void GenerateGrids(int rows, int cols)
+        {
+            this.rows = rows;
+            this.cols = cols;
             
             for (var i = 0; i < rows; i++)
             {
                 for (var j = 0; j < cols; j++)
                 {
-                    var grid = Instantiate(gridTemplate, layoutGroup.transform).GetComponent<Grid>();
-                    grid.data = new GridData(i, j);
-                    grids.Add(grid);
+                    GenerateGrid(i, j);
                 }
             }
         }
 
-        public Vector3 GetPosOfGrid(Coord coord)
+        public Vector3 LocalPositionOfCoord(Coord coord)
         {
             var index = coord.ToIndex(cols);
             // Debug.Log("[GridsHandler] coord: " + coord.ToJson() + ", index: " + index);
@@ -51,5 +62,19 @@ namespace GameBase
             var pos = TopLeftPos + (Vector3) displacement;
             return pos;
         }
+        
+        private void GenerateGrid(int i, int j)
+        {
+            var grid = Instantiate(gridTemplate, layoutGroup.transform).GetComponent<Grid>();
+            grid.data = new GridData(i, j);
+            grids.Add(grid);
+            grid.gridClickedEvent.AddListener(OnGridClicked);
+        }
+        
+        private void OnGridClicked(GridData data)
+        {
+            onGridClickedEvent.Invoke(data);
+        }
+
     }
 }

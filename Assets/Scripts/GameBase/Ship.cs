@@ -13,7 +13,8 @@ namespace GameBase
     {
         [HideInInspector] 
         public ShipData data;
-        
+
+        public ShipsHandler handler;
         public GridLayoutGroup layoutGroup;
         public GameObject shipGridTemplate;
 
@@ -49,12 +50,7 @@ namespace GameBase
 
         private void SetPosition()
         {
-            var topLeftPos = AppManager.Instance.gridsHandler.GetPosOfGrid(TopLeft);
-            var bottomRightCoord = TopLeft + Bounds.ToVector2() - Vector2.one;
-            var bottomRightPos = AppManager.Instance.gridsHandler.GetPosOfGrid(bottomRightCoord);
-            
-            // DebugLogPos(bottomRightCoord, topLeftPos, bottomRightPos);
-            transform.localPosition = (1 / 2f) * (topLeftPos + bottomRightPos);
+            handler.SetShipPosition(this);
         }
 
         private void SetLayoutGroup()
@@ -124,19 +120,6 @@ namespace GameBase
         {
             data.Rotate();
             RenderRotation();
-        }
-
-        #endregion
-
-        #region Debug Helpers
-
-        private void DebugLogPos(Coord bottomRight, Vector3 topLeftPos, Vector3 bottomRightPos)
-        {
-            Debug.Log("[Ship] top left coord: " + TopLeft.ToJson());
-            Debug.Log("[Ship] bottom right coord: " + bottomRight.ToJson());
-            Debug.Log("[Ship] top left grid pos: " + topLeftPos);
-            Debug.Log("[Ship] bottom right pos: " + bottomRightPos);
-            Debug.Log("[Ship] local position: " + transform.localPosition);
         }
 
         #endregion

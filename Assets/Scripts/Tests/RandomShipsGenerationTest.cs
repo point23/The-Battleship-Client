@@ -12,7 +12,6 @@ namespace Tests
     {
         public ShipsHandler shipsHandler;
         public Button btnGenerateShip;
-        private readonly string _shipsDataTestPath = Application.dataPath + "/Data/Test/ships_data_test.json";
 
         public void Start()
         {
@@ -32,7 +31,7 @@ namespace Tests
 
         private void GenerateShip()
         {
-            var shipsDataList = FileHandler.ReadListFromJSON<ShipData>(_shipsDataTestPath);
+            var shipsDataList = FileHandler.ReadListFromJSON<ShipData>(AppManager.Instance.testShipsJsonDataPath);
             shipsHandler.GenerateShips(shipsDataList);
         }
     }
