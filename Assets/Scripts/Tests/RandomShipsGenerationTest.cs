@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DataTypes;
 using GameBase;
 using UnityEngine;
@@ -17,21 +18,21 @@ namespace Tests
         {
             btnGenerateShip.onClick.AddListener(GenerateShip);
             
-            // var shipData = new ShipData(
-            //         new BoundingBox(2, 2), 
-            //         new Coord(2, 2),
-            //         new List<Coord>() {new Coord(0, 0), new Coord(0, 1), new Coord(1, 1)});
-            // var dataList = new List<ShipData>();
-            // for (var i = 0; i < 2; i++)
-            // {
-            //     dataList.Add(shipData);
-            // }
-            // FileHandler.SaveToJSON(dataList, _shipsDataTestPath);
+            var shipData = new ShipData(
+                    new BoundingBox(2, 2), 
+                    new Coord(2, 2),
+                    new List<Coord>() {new Coord(0, 0), new Coord(0, 1), new Coord(1, 1)});
+            var dataList = new List<ShipData>();
+            for (var i = 0; i < 2; i++)
+            {
+                dataList.Add(shipData);
+            }
+            FileHandler.SaveToJSON(dataList, AppManager.TestShipsJsonDataPath);
         }
 
         private void GenerateShip()
         {
-            var shipsDataList = FileHandler.ReadListFromJSON<ShipData>(AppManager.Instance.testShipsJsonDataPath);
+            var shipsDataList = FileHandler.ReadListFromJSON<ShipData>(AppManager.TestShipsJsonDataPath);
             shipsHandler.GenerateShips(shipsDataList);
         }
     }

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace GameBase
 {
@@ -21,11 +20,8 @@ namespace GameBase
         }
 
         #region Data Paths
-        
-        [HideInInspector] 
-        public string shipJsonDataPath = Application.dataPath + "/Data/" + "ships_data.json";
-        [HideInInspector] 
-        public string testShipsJsonDataPath =  Application.dataPath + "/Data/Test/ships_data_test.json";
+        public string ShipJsonDataPath => Application.dataPath + "/Data/" + "ships_data.json";
+        public static string TestShipsJsonDataPath =>  Application.dataPath + "/Data/Test/ships_data_test.json";
         
         #endregion
 

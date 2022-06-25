@@ -26,13 +26,17 @@ namespace Tests
 
         private async void StartGame()
         {
-            var board = await GenerateBoard();
-            GenerateShips(board);
+            var board1 = await GenerateBoard();
+            var board2 = await GenerateBoard();
+            GenerateShips(board1);
+            btnStart.gameObject.SetActive(false);
         }
 
         private void GenerateShips(Board board)
         {
-            var shipsDataList = FileHandler.ReadListFromJSON<ShipData>(AppManager.Instance.testShipsJsonDataPath);
+            var shipsDataList = FileHandler.ReadListFromJSON<ShipData>(AppManager.TestShipsJsonDataPath);
+            Debug.Log(AppManager.TestShipsJsonDataPath);
+            Debug.Log(shipsDataList.Count);
             shipsHandler.board = board;
             shipsHandler.GenerateShips(shipsDataList);
         }
