@@ -31,8 +31,11 @@ namespace GameBase
             var topLeftPos = board.LocalPositionOfCoord(ship.TopLeft);
             var bottomRightCoord = ship.TopLeft + ship.Bounds.ToVector2() - Vector2.one;
             var bottomRightPos = board.LocalPositionOfCoord(bottomRightCoord);
-            
-            // DebugLogPos(ship.topLeft, bottomRightCoord, topLeftPos, bottomRightPos);
+            topLeftPos += board.transform.localPosition;
+            bottomRightCoord += board.transform.localPosition;
+            bottomRightPos += board.transform.localPosition;
+
+            // DebugLogPos(ship.TopLeft, bottomRightCoord, topLeftPos, bottomRightPos);
             ship.transform.localPosition = (1 / 2f) * (topLeftPos + bottomRightPos);
         }
         

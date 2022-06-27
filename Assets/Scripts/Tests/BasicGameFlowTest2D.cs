@@ -35,8 +35,6 @@ namespace Tests
         private void GenerateShips(Board board)
         {
             var shipsDataList = FileHandler.ReadListFromJSON<ShipData>(AppManager.TestShipsJsonDataPath);
-            Debug.Log(AppManager.TestShipsJsonDataPath);
-            Debug.Log(shipsDataList.Count);
             shipsHandler.board = board;
             shipsHandler.GenerateShips(shipsDataList);
         }
