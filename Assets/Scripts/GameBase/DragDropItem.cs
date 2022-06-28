@@ -9,18 +9,22 @@ namespace GameBase
 {
     public class DragDropItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
-        private Board Board => FindObjectOfType<Board>();
         private Transform _transform;
         private CanvasGroup _canvasGroup;
         private List<int> _occupiedGrids;
         private readonly Diastimeter _diastimeter = new Diastimeter();
-
         public UnityEvent<Vector2Int> OnDraggedEvent;
-        
+        public Bounds bounds;
+
         public void Start()
         {
             _transform = GetComponent<Transform>();
             _canvasGroup = GetComponent<CanvasGroup>();
+        }
+
+        public void Init(Bounds bounds)
+        {
+            this.bounds = bounds;
         }
         
         public void OnPointerDown(PointerEventData eventData)
@@ -43,7 +47,10 @@ namespace GameBase
         {
             var delta = _diastimeter.End(eventData.position);
             var normalizedDelta = NormalizedDelta(delta);
-            if (!TryMove(normalizedDelta)) return;
+            if (!bounds.Contains(eventData.position))
+                return;
+            if (!TryMove(normalizedDelta)) 
+                return;
             
             OnDraggedEvent.Invoke(CoordDelta(normalizedDelta));
             _diastimeter.Begin(eventData.position);
@@ -54,6 +61,7 @@ namespace GameBase
             _transform.localPosition += (Vector3) delta;
             return delta.sqrMagnitude > 0;
         }
+        
 
         private static Vector2Int CoordDelta(Vector2 posDelta)
         { 

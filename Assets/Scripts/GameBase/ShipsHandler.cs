@@ -9,8 +9,14 @@ namespace GameBase
     {
         public Board board;
         public GameObject shipTemplate;
-        public Transform shipsTransform;
+        public Transform shipsTrans;
 
+        public void Init(Board board)
+        {
+            this.board = board;
+            this.shipsTrans = board.chessTrans;
+        }
+        
         public void GenerateShips(List<ShipData> dataList)
         {
             foreach (var data in dataList)
@@ -21,8 +27,8 @@ namespace GameBase
 
         public void GenerateShip(ShipData data)
         {
-            var ship  = Instantiate(shipTemplate, shipsTransform).GetComponent<Ship>();
-            ship.handler = this;
+            var ship  = Instantiate(shipTemplate, shipsTrans).GetComponent<Ship>();
+            ship.Init(this);
             ship.Render(data);
         }
 
@@ -31,10 +37,6 @@ namespace GameBase
             var topLeftPos = board.LocalPositionOfCoord(ship.TopLeft);
             var bottomRightCoord = ship.TopLeft + ship.Bounds.ToVector2() - Vector2.one;
             var bottomRightPos = board.LocalPositionOfCoord(bottomRightCoord);
-            topLeftPos += board.transform.localPosition;
-            bottomRightCoord += board.transform.localPosition;
-            bottomRightPos += board.transform.localPosition;
-
             // DebugLogPos(ship.TopLeft, bottomRightCoord, topLeftPos, bottomRightPos);
             ship.transform.localPosition = (1 / 2f) * (topLeftPos + bottomRightPos);
         }

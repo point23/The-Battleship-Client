@@ -10,14 +10,16 @@ namespace GameBase
     public class Board : MonoBehaviour
     {
         public GameObject gridTemplate;
-        public GridLayoutGroup layoutGroup;
+        public GridLayoutGroup gridsLayout;
+        public Transform chessTrans;
         public int rows = 9;
         public int cols = 9;
         public List<Grid> grids;
+
         private Vector2 CellSize
         {
-            get => layoutGroup.cellSize;
-            set => layoutGroup.cellSize = value;
+            get => gridsLayout.cellSize;
+            set => gridsLayout.cellSize = value;
         }
 
         public UnityEvent<GridData> onGridClickedEvent;
@@ -27,11 +29,18 @@ namespace GameBase
         // |__|__|__|
         // |__|__|__|
         private Vector3 TopLeftPos => grids.First().transform.localPosition;
-        
+        private BoxCollider Collider => GetComponent<BoxCollider>();
+        public Bounds Bounds => Collider.bounds;
+
+        private float Height => CellSize.y * rows;
+        private float Width => CellSize.x * cols;
+
         public void Awake()
         {
             CellSize = AppManager.Instance.CellSize;
             grids = new List<Grid>();
+            Collider.size = new Vector3(Height, Width);
+            Debug.Log("[Board] Awake => bounds:" + Bounds);
         }
 
         public void GenerateGrids(int rows, int cols)
@@ -62,10 +71,10 @@ namespace GameBase
             var pos = TopLeftPos + (Vector3) displacement;
             return pos;
         }
-        
+
         private void GenerateGrid(int i, int j)
         {
-            var grid = Instantiate(gridTemplate, layoutGroup.transform).GetComponent<Grid>();
+            var grid = Instantiate(gridTemplate, gridsLayout.transform).GetComponent<Grid>();
             grid.data = new GridData(i, j);
             grids.Add(grid);
             grid.gridClickedEvent.AddListener(OnGridClicked);

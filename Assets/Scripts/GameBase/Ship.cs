@@ -30,6 +30,12 @@ namespace GameBase
             GetComponent<MultiClickHandler>().onMultiClickedEvent.AddListener(OnRotated);
         }
 
+        public void Init(ShipsHandler handler)
+        {
+            this.handler = handler;
+            GetComponent<DragDropItem>().bounds = handler.board.Bounds;
+        }
+
         public void Render(ShipData data)
         {
             this.data = data;
