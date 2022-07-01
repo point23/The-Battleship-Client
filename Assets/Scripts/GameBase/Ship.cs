@@ -5,6 +5,7 @@ using DataTypes;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 using Utilities;
 
 namespace GameBase
@@ -13,27 +14,31 @@ namespace GameBase
     {
         [HideInInspector] 
         public ShipData data;
-
         public ShipsHandler handler;
         public GridLayoutGroup layoutGroup;
         public GameObject shipGridTemplate;
 
         public BoundingBox Bounds => data.bounds;
-        public Coord TopLeft => data.topLeft;
+        public Coord TopLeft
+        {
+            get => data.topLeft;
+            private set => data.topLeft = value;
+        }
+
         public List<Coord> Grids => data.grids;
         public int GridsCount => Bounds.height * Bounds.width;
         public List<Grid> GridList => layoutGroup.GetComponentsInChildren<Grid>().ToList();
 
         public void Start()
         {
-            GetComponent<DragDropItem>().OnDraggedEvent.AddListener(OnDragged);
+            GetComponent<DragDropItem>().onDraggedEvent.AddListener(OnDragged);
             GetComponent<MultiClickHandler>().onMultiClickedEvent.AddListener(OnRotated);
         }
 
         public void Init(ShipsHandler handler)
         {
             this.handler = handler;
-            GetComponent<DragDropItem>().bounds = handler.board.Bounds;
+            GetComponent<DragDropItem>().Init(new Diastimeter(handler.board));
         }
 
         public void Render(ShipData data)
@@ -70,7 +75,7 @@ namespace GameBase
             var occupiedGrids = Grids.Select(gridCoord => gridCoord.ToIndex(Bounds.width)).ToList();
             foreach (var grid in GridList)
             {
-                grid.Render(isActive: occupiedGrids.Contains(grid.Pos.ToIndex(Bounds.width)));
+                grid.Render(isActive: occupiedGrids.Contains(grid.Coord.ToIndex(Bounds.width)));
             }
         }
 
@@ -105,21 +110,12 @@ namespace GameBase
                 Destroy(grid.gameObject);
             }
         }
-
-        #region Event Listeners
         
+        #region Event Listeners
         private void OnDragged(Vector2Int delta)
         {
-            Debug.Log("[Ship] on dragged delta:" + delta);
-            // example: 
-            // delta in world space (1,  1)
-            // delta in coords      (-1, 0)
-            data.topLeft += HandleWorldDelta(delta);
-        }
-
-        private Vector2Int HandleWorldDelta(Vector2Int delta)
-        {
-            return new Vector2Int(-delta.y, delta.x);
+            TopLeft += delta;
+            SetPosition();
         }
 
         private void OnRotated()

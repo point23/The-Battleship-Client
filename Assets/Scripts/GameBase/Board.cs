@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using DataTypes;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Utilities;
 
 namespace GameBase
 {
@@ -15,13 +17,12 @@ namespace GameBase
         public int rows = 9;
         public int cols = 9;
         public List<Grid> grids;
-
+        public Bounds Bounds => GetComponent<BoxCollider>().bounds;
         private Vector2 CellSize
         {
             get => gridsLayout.cellSize;
             set => gridsLayout.cellSize = value;
         }
-
         public UnityEvent<GridData> onGridClickedEvent;
         
         //  *________
@@ -30,17 +31,15 @@ namespace GameBase
         // |__|__|__|
         private Vector3 TopLeftPos => grids.First().transform.localPosition;
         private BoxCollider Collider => GetComponent<BoxCollider>();
-        public Bounds Bounds => Collider.bounds;
-
         private float Height => CellSize.y * rows;
         private float Width => CellSize.x * cols;
+        private Vector3 Size => new Vector3(Height, Width);
 
         public void Awake()
         {
-            CellSize = AppManager.Instance.CellSize;
+            CellSize = AppManager.instance.cellSize;
             grids = new List<Grid>();
-            Collider.size = new Vector3(Height, Width);
-            Debug.Log("[Board] Awake => bounds:" + Bounds);
+            Collider.size = Size;
         }
 
         public void GenerateGrids(int rows, int cols)
@@ -60,18 +59,24 @@ namespace GameBase
         public Vector3 LocalPositionOfCoord(Coord coord)
         {
             var index = coord.ToIndex(cols);
-            // Debug.Log("[GridsHandler] coord: " + coord.ToJson() + ", index: " + index);
-            if (index < grids.Count && index > 0)
-            {
+            if (index < grids.Count && index >= 0)
                 return grids[index].transform.localPosition;
-            }
-
             var delta = coord.CalculateDelta(Coord.one);
             var displacement = new Vector2(delta.x, -delta.y) * CellSize;
             var pos = TopLeftPos + (Vector3) displacement;
             return pos;
         }
 
+        public Coord CoordOfPosition(Vector3 position)
+        {
+            var localPosition = transform.InverseTransformPoint(position);
+            var deltaX = localPosition.x - grids[0].LocalPosition.x + (CellSize.x / 2);
+            var deltaY = grids[0].LocalPosition.y - localPosition.y + (CellSize.y / 2);
+            var coord = new Coord( (int) (deltaY / CellSize.y), (int) (deltaX / CellSize.x));
+            Debug.Log($"---> deltaX: {deltaX}, deltaY: {deltaY}, coord: {coord.ToJson()}");
+            return coord;
+        }
+        
         private void GenerateGrid(int i, int j)
         {
             var grid = Instantiate(gridTemplate, gridsLayout.transform).GetComponent<Grid>();

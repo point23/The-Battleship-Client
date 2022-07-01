@@ -12,9 +12,9 @@ namespace GameBase
         public GridData data;
         [HideInInspector]
         public UnityEvent<GridData> gridClickedEvent;
-        
-        public Coord Pos => data.pos;
-        
+        public Coord Coord => data.coord;
+        public Vector3 Position => transform.position;
+        public Vector3 LocalPosition => transform.localPosition;
         private Image GridImage => GetComponentInChildren<Image>();
         private Button BtnGrid => GetComponentInChildren<Button>();
 

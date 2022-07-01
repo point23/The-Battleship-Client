@@ -36,7 +36,7 @@ RectTransform:
   m_Children:
   - {fileID: 1129409537559313218}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -126,9 +126,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data:
-    boundingBox: {x: 0, y: 0}
-    topLeft: {x: 0, y: 0}
+    bounds:
+      width: 0
+      height: 0
+    topLeft:
+      x: 0
+      y: 0
     grids: []
+  handler: {fileID: 0}
   layoutGroup: {fileID: 5247550542380472930}
   shipGridTemplate: {fileID: 4321285433120922893, guid: 4c0e17f175592f148b806d039af79551, type: 3}
 --- !u!114 &5188512924303426160
@@ -143,9 +148,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 843ae1c139678bd40bf18be7ceaab30c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnDraggedEvent:
+  dragDeltaThreshold: 0.5
+  onDragScaleUp: 1.2
+  onDragAlphaDelta: 0.6
+  onDraggedEvent:
     m_PersistentCalls:
       m_Calls: []
+  bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
 --- !u!114 &5188512924303426164
 MonoBehaviour:
   m_ObjectHideFlags: 0

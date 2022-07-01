@@ -6,16 +6,16 @@ namespace DataTypes
     [Serializable]
     public class GridData
     {
-        public Coord pos;
+        public Coord coord;
 
-        public GridData(Coord pos)
+        public GridData(Coord coord)
         {
-            this.pos = pos;
+            this.coord = coord;
         }
         
         public GridData(int x, int y)
         {
-            pos = new Coord(x, y);
+            coord = new Coord(x, y);
         }
 
         public string ToJson()

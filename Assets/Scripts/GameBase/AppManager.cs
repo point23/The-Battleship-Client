@@ -4,18 +4,18 @@ namespace GameBase
 {
     public class AppManager : MonoBehaviour
     {
-        public static AppManager Instance = new AppManager();
-        public Vector2 CellSize = new Vector2(100, 100);
+        public static AppManager instance;
+        public Vector2 cellSize = new Vector2(100, 100);
         
         public void Awake()
         {
-            if (Instance != null && Instance != this)
+            if (instance != null && instance != this)
             {
-                Destroy(Instance);
+                Destroy(instance);
             }
             else
             {
-                Instance = this;
+                instance = this;
             }
         }
 

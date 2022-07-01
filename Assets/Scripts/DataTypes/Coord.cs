@@ -34,10 +34,10 @@ namespace DataTypes
             }
         }
         
-        public Coord(int x, int y)
+        public Coord(int row, int col)
         {
-            Row = x;
-            Col = y;
+            Row = row;
+            Col = col;
         }
 
         public void RotateAroundClockwise(Vector2 center, float angle)
@@ -98,6 +98,11 @@ namespace DataTypes
         public Vector2 CalculateDelta(Coord other)
         {
             return new Vector2(x - other.x, y - other.y);        
+        }
+        
+        public Vector2Int CalculateDeltaInt(Coord other)
+        {
+            return new Vector2Int(x - other.x, y - other.y);        
         }
         
         #endregion

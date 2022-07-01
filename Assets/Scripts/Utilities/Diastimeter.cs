@@ -1,19 +1,43 @@
-﻿using UnityEngine;
+﻿using DataTypes;
+using GameBase;
+using UnityEngine;
 
 namespace Utilities
 {
     public class Diastimeter
     {
-        public Vector2 begin;
+        private readonly Board _board;
+        private Coord _begin;
+        private Coord _end;
+        public bool IsAvailable => _end.x >= 0 && _end.y >= 0 && _end.x < _board.cols && _end.y < _board.rows;
 
-        public void Begin(Vector2 begin)
+        public Diastimeter(Board board)
         {
-            this.begin = begin;
+            _board = board;
+        }
+        
+        public void Begin(Vector3 position)
+        {
+            _begin = _board.CoordOfPosition(position);
         }
 
-        public Vector2 End(Vector2 end)
+        public Vector2Int CalculateDelta(Vector3 position)
         {
-            return end - begin;
+            _end = _board.CoordOfPosition(position);
+            return Delta;
         }
+
+        public void End()
+        {
+            _begin = Coord.zero; 
+            _end = Coord.zero;
+        }
+
+        public string ToJson()
+        {
+            return $"begin: {_begin.ToJson()}, end: {_end.ToJson()}";
+        }
+        
+        private Vector2Int Delta => _end.CalculateDeltaInt(_begin);
     }
 }

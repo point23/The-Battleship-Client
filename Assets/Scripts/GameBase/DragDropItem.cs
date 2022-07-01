@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Dynamic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -9,87 +8,58 @@ namespace GameBase
 {
     public class DragDropItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
-        private Transform _transform;
+        public float onDragScaleUp = 1.2f;
+        public float onDragAlphaDelta = 0.6f;
+        public UnityEvent<Vector2Int> onDraggedEvent;
         private CanvasGroup _canvasGroup;
         private List<int> _occupiedGrids;
-        private readonly Diastimeter _diastimeter = new Diastimeter();
-        public UnityEvent<Vector2Int> OnDraggedEvent;
-        public Bounds bounds;
-
+        private Diastimeter _diastimeter;
+        
         public void Start()
         {
-            _transform = GetComponent<Transform>();
             _canvasGroup = GetComponent<CanvasGroup>();
         }
 
-        public void Init(Bounds bounds)
+        public void Init(Diastimeter diastimeter)
         {
-            this.bounds = bounds;
+            _diastimeter = diastimeter;
         }
         
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            
-        }
+        public void OnPointerDown(PointerEventData eventData) { }
         
         public void OnBeginDrag(PointerEventData eventData)
         {
             _diastimeter.Begin(eventData.position);
-            _canvasGroup.alpha = 0.6f;
+            RenderOnBeginDrag();
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            _canvasGroup.alpha = 1f;
+            _diastimeter.End();
+            RenderOnEndDrag();
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            var delta = _diastimeter.End(eventData.position);
-            var normalizedDelta = NormalizedDelta(delta);
-            if (!bounds.Contains(eventData.position))
+            var delta = _diastimeter.CalculateDelta(eventData.position); 
+            // Debug.Log("----> diastimeter: " + _diastimeter.ToJson());
+            if (!_diastimeter.IsAvailable || delta.sqrMagnitude <= 0)
                 return;
-            if (!TryMove(normalizedDelta)) 
-                return;
-            
-            OnDraggedEvent.Invoke(CoordDelta(normalizedDelta));
+            onDraggedEvent.Invoke(delta);
+            _diastimeter.End();
             _diastimeter.Begin(eventData.position);
         }
 
-        private bool TryMove(Vector2 delta)
+        private void RenderOnBeginDrag()
         {
-            _transform.localPosition += (Vector3) delta;
-            return delta.sqrMagnitude > 0;
+            transform.localScale = new Vector3(onDragScaleUp, onDragScaleUp, onDragScaleUp);
+            _canvasGroup.alpha = onDragAlphaDelta;
         }
         
-
-        private static Vector2Int CoordDelta(Vector2 posDelta)
-        { 
-            var delta = posDelta / AppManager.Instance.CellSize;
-            return new Vector2Int((int) delta.x, (int) delta.y);
-        }
-        
-        private static Vector2 NormalizedDelta(Vector2 delta)
+        private void RenderOnEndDrag()
         {
-            var normalizedDelta = Vector2.zero;
-            if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
-            {
-                var gridSizeX = AppManager.Instance.CellSize.x;
-                if (Mathf.Abs(delta.x) >= 0.5 * gridSizeX)
-                {
-                    normalizedDelta.x = (delta.x > 0)? gridSizeX : -gridSizeX;
-                }
-            }
-            else if (Mathf.Abs(delta.y) > 0)
-            {
-                var gridSizeY = AppManager.Instance.CellSize.y;
-                if (Mathf.Abs(delta.y) >= 0.5 * gridSizeY)
-                {
-                    normalizedDelta.y = (delta.y > 0)? gridSizeY : -gridSizeY;
-                }
-            }
-
-            return normalizedDelta;
+            transform.localScale = Vector3.one;
+            _canvasGroup.alpha = 1f;
         }
     }
 }
