@@ -29,11 +29,9 @@ namespace GameBase
         public List<Coord> GridsCoordList => data.grids;
         public int GridsCount => Bounds.height * Bounds.width;
         public List<Grid> GridList => layoutGroup.GetComponentsInChildren<Grid>().ToList();
-        private bool isValid;
 
         public void Start()
         {
-            isValid = true;
             GetComponent<DragDropItem>().onDraggedEvent.AddListener(OnDragged);
             GetComponent<MultiClickHandler>().onMultiClickedEvent.AddListener(OnRotated);
         }
@@ -90,11 +88,11 @@ namespace GameBase
                 for (var col = 0; col < Bounds.width; col++)
                 {
                     var coord = new Coord(row, col);
-                    DebugPG13.Log(new Dictionary<object, object>()
-                    {
-                        {"grid coord", coord.ToJson()},
-                        {"index", coord.ToIndex(Bounds.width)}
-                    });
+                    // DebugPG13.Log(new Dictionary<object, object>()
+                    // {
+                    //     {"grid coord", coord.ToJson()},
+                    //     {"index", coord.ToIndex(Bounds.width)}
+                    // });
                     GridList[coord.ToIndex(Bounds.width)].data = new GridData(coord);
                 }
             }
@@ -114,10 +112,6 @@ namespace GameBase
                 return false;
 
             TopLeft += delta;
-            for (var i = 0; i < GridsCoordList.Count; i++)
-            {
-                GridsCoordList[i] += delta;
-            }
             return true;
         }
         
@@ -130,17 +124,19 @@ namespace GameBase
             }
         }
 
+        private bool AllGridsInBounds => handler.AllGridsInBounds(this);
+
         #region Event Listeners
         private void OnDragged(Vector2Int delta)
         {
-            TopLeft += delta;
-            if (!TryMove(delta) && isValid)
+            if (TryMove(delta))
             {
-                RenderGrids(false);
+                // DebugPG13.Log(new Dictionary<object, object>() {{"AllGridsInBounds", AllGridsInBounds}});
+                RenderGrids(isValid: AllGridsInBounds);
             }
             SetPosition();
         }
-
+        
         private void OnRotated()
         {
             data.Rotate();

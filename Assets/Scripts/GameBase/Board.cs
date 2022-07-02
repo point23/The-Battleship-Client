@@ -58,11 +58,14 @@ namespace GameBase
 
         public Vector3 LocalPositionOfCoord(Coord coord)
         {
-            var index = coord.ToIndex(cols);
-            if (index < grids.Count && index >= 0)
+            if (coord.IsInBounds(rows, cols))
+            {
+                var index = coord.ToIndex(cols);
                 return grids[index].transform.localPosition;
-            var delta = coord.CalculateDelta(Coord.one);
-            var displacement = new Vector2(delta.x, -delta.y) * CellSize;
+            }
+            
+            var delta = coord.CalculateDelta(Coord.zero);
+            var displacement = new Vector2(delta.y, -delta.x) * CellSize;
             var pos = TopLeftPos + (Vector3) displacement;
             return pos;
         }
@@ -73,7 +76,12 @@ namespace GameBase
             var deltaX = localPosition.x - grids[0].LocalPosition.x + (CellSize.x / 2);
             var deltaY = grids[0].LocalPosition.y - localPosition.y + (CellSize.y / 2);
             var coord = new Coord( (int) (deltaY / CellSize.y), (int) (deltaX / CellSize.x));
-            Debug.Log($"---> deltaX: {deltaX}, deltaY: {deltaY}, coord: {coord.ToJson()}");
+            // DebugPG13.Log(new Dictionary<object, object>()
+            // {
+            //     {"deltaX", deltaX},
+            //     {"deltaY", deltaY},
+            //     {"coord", coord.ToJson()}
+            // });
             return coord;
         }
         

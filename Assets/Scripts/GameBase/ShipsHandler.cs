@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DataTypes;
+using UnityEditor;
 using UnityEngine;
 using Utilities;
 
@@ -52,13 +53,46 @@ namespace GameBase
         {
             for (var i = 0; i < ship.GridsCoordList.Count; i++)
             {
-                ship.GridsCoordList[i] += delta;
-                if (ship.GridsCoordList[i].IsInBounds(board.rows, board.cols))
-                {
-                    ship.GridsCoordList[i] -= delta;
+                if (IsGridInBoundsAfterMove(ship, i, delta))
                     return true;
+            }
+            return false;
+        }
+
+        public bool AllGridsInBounds(Ship ship)
+        {
+            for (var i = 0; i < ship.GridsCoordList.Count; i++)
+            {
+                if (!IsGridInBounds(ship, i))
+                {
+                    return false;
                 }
-                ship.GridsCoordList[i] -= delta;
+            }
+            return true;
+        }
+        
+        private bool IsGridInBoundsAfterMove(Ship ship, int index, Vector2Int delta)
+        {
+            var coord = new Coord(ship.TopLeft.x, ship.TopLeft.y);
+            coord += ship.GridsCoordList[index].ToVector2Int();
+            coord += delta;
+
+            if (coord.IsInBounds(board.rows, board.cols))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        
+        private bool IsGridInBounds(Ship ship, int index)
+        {
+            var coord = new Coord(ship.TopLeft.x, ship.TopLeft.y);
+            coord += ship.GridsCoordList[index].ToVector2Int();
+
+            if (coord.IsInBounds(board.rows, board.cols))
+            {
+                return true;
             }
 
             return false;

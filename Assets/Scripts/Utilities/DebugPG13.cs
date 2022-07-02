@@ -20,5 +20,10 @@ namespace Utilities
             }
             Debug.Log(info);
         }
+        
+        public static void Log(object key, object value)
+        {
+            Log(new Dictionary<object, object>() {{key, value}});
+        }
     }
 }
