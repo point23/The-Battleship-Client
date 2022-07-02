@@ -11,7 +11,7 @@ namespace DataTypes
         public Coord topLeft;
         public List<Coord> grids;
 
-        public Vector2 Center => new(0.5f * (bounds.Max - 1), 0.5f * (bounds.Max - 1));
+        public Vector2 CenterPosition => new(0.5f * (bounds.Max - 1), 0.5f * (bounds.Max - 1));
         public ShipData(BoundingBox bounds, Coord topLeft, List<Coord> grids)
         {
             this.bounds = bounds;
@@ -64,7 +64,7 @@ namespace DataTypes
         {
             foreach (var grid in grids)
             {
-                grid.RotateAroundClockwise(Center, 90);
+                grid.RotateAroundClockwise(CenterPosition, 90);
             }
         }
 
@@ -86,7 +86,7 @@ namespace DataTypes
         {
             if (bounds.IsSquare()) return Vector2Int.zero;
             var oldBottomLeft = new Coord(bounds.height - 1, 0);
-            oldBottomLeft.RotateAroundClockwise(Center, 90);
+            oldBottomLeft.RotateAroundClockwise(CenterPosition, 90);
             var delta = oldBottomLeft.CalculateDelta(Coord.zero);
             Debug.Log("[ShipData] oldBottomLeft: " + oldBottomLeft);
             Debug.Log("[ShipData] topLeft delta: " + delta);

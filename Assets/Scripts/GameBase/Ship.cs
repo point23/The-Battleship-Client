@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DataTypes;
@@ -97,7 +98,11 @@ namespace GameBase
                 for (var col = 0; col < Bounds.width; col++)
                 {
                     var coord = new Coord(row, col);
-                    // Debug.Log("[Ship] grid coord: " + coord.ToJson() + ", index: " + coord.ToIndex(Bounds.width));
+                    DebugPG13.Log(new Dictionary<object, object>()
+                    {
+                        {"grid coord", coord.ToJson()},
+                        {"index", coord.ToIndex(Bounds.width)}
+                    });
                     GridList[coord.ToIndex(Bounds.width)].data = new GridData(coord);
                 }
             }
@@ -111,6 +116,17 @@ namespace GameBase
             }
         }
         
+        private bool TryTransition(Vector2Int delta)
+        {
+            TopLeft += delta;
+            for (var i = 0; i < Grids.Count; i++)
+            {
+                Grids[i] += delta;
+            }
+
+            return false;
+        }
+
         #region Event Listeners
         private void OnDragged(Vector2Int delta)
         {

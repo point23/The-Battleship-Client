@@ -11,7 +11,6 @@ namespace GameBase
         public Board board;
         public GameObject shipTemplate;
         public Transform shipsTrans;
-        private readonly DebugFormatter _debugFormatter = new DebugFormatter("ShipsHandler");
 
         public void Init(Board board)
         {
@@ -45,7 +44,7 @@ namespace GameBase
 
         private void DebugLogPos(Coord topLeft, Coord bottomRight, Vector3 topLeftPos, Vector3 bottomRightPos)
         {
-            var info = _debugFormatter.Format("SetShipPosition", "");
+            var info = "";
             info += $"top left coord: {topLeft.ToJson()}, ";
             info += $"bottom right coord: {bottomRight.ToJson()}, ";
             info += $"top left pos: {topLeftPos}, ";
