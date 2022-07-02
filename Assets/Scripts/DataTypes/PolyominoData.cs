@@ -5,14 +5,14 @@ using UnityEngine;
 namespace DataTypes
 {
     [Serializable]
-    public struct ShipData
+    public struct PolyominoData
     {
         public BoundingBox bounds;
         public Coord topLeft;
         public List<Coord> grids;
 
         public Vector2 CenterPosition => new(0.5f * (bounds.Max - 1), 0.5f * (bounds.Max - 1));
-        public ShipData(BoundingBox bounds, Coord topLeft, List<Coord> grids)
+        public PolyominoData(BoundingBox bounds, Coord topLeft, List<Coord> grids)
         {
             this.bounds = bounds;
             this.topLeft = topLeft;
@@ -75,7 +75,6 @@ namespace DataTypes
 
         private void SettleGridsByTopLeftDelta(Vector2 delta)
         {
-            Debug.Log("[ShipData] delta: " + delta);
             for (var i = 0; i < grids.Count; i++)
             {
                 grids[i] -= delta;
@@ -88,8 +87,6 @@ namespace DataTypes
             var oldBottomLeft = new Coord(bounds.height - 1, 0);
             oldBottomLeft.RotateAroundClockwise(CenterPosition, 90);
             var delta = oldBottomLeft.CalculateDelta(Coord.zero);
-            Debug.Log("[ShipData] oldBottomLeft: " + oldBottomLeft);
-            Debug.Log("[ShipData] topLeft delta: " + delta);
             return delta;
         }
 

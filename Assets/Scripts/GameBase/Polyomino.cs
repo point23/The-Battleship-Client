@@ -11,13 +11,13 @@ using Utilities;
 
 namespace GameBase
 {
-    public class Ship : MonoBehaviour
+    public class Polyomino : MonoBehaviour
     {
         [HideInInspector] 
-        public ShipData data;
-        public ShipsHandler handler;
+        public PolyominoData data;
+        public PolyominoesHandler handler;
         public GridLayoutGroup layoutGroup;
-        public GameObject shipGridTemplate;
+        public GameObject polyominoGridTemplate;
 
         public BoundingBox Bounds => data.bounds;
         public Coord TopLeft
@@ -36,13 +36,13 @@ namespace GameBase
             GetComponent<MultiClickHandler>().onMultiClickedEvent.AddListener(OnRotated);
         }
 
-        public void Init(ShipsHandler handler)
+        public void Init(PolyominoesHandler handler)
         {
             this.handler = handler;
             GetComponent<DragDropItem>().Init(new Diastimeter(handler.board));
         }
 
-        public void Render(ShipData data)
+        public void Render(PolyominoData data)
         {
             this.data = data;
             SetPosition();
@@ -62,7 +62,7 @@ namespace GameBase
 
         private void SetPosition()
         {
-            handler.SetShipPosition(this);
+            handler.SetPolyominoPosition(this);
         }
 
         private void SetLayoutGroup()
@@ -76,7 +76,7 @@ namespace GameBase
             {
                 for (var col = 0; col < Bounds.width; col++)
                 {
-                    Instantiate(shipGridTemplate, layoutGroup.transform).GetComponent<Grid>();
+                    Instantiate(polyominoGridTemplate, layoutGroup.transform).GetComponent<Grid>();
                 }
             }
         }

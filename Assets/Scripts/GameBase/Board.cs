@@ -13,7 +13,7 @@ namespace GameBase
     {
         public GameObject gridTemplate;
         public GridLayoutGroup gridsLayout;
-        public Transform chessTrans;
+        public Transform chessLayout;
         public int rows = 9;
         public int cols = 9;
         public List<Grid> grids;

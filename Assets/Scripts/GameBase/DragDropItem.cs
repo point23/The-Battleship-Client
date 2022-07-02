@@ -12,7 +12,6 @@ namespace GameBase
         public float onDragAlphaDelta = 0.6f;
         public UnityEvent<Vector2Int> onDraggedEvent;
         private CanvasGroup _canvasGroup;
-        private List<int> _occupiedGrids;
         private Diastimeter _diastimeter;
         
         public void Start()
@@ -42,7 +41,6 @@ namespace GameBase
         public void OnDrag(PointerEventData eventData)
         {
             var delta = _diastimeter.CalculateDelta(eventData.position); 
-            // Debug.Log("----> diastimeter: " + _diastimeter.ToJson());
             if (!_diastimeter.IsAvailable || delta.sqrMagnitude <= 0)
                 return;
             onDraggedEvent.Invoke(delta);

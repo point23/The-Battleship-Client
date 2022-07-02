@@ -614,7 +614,7 @@ MonoBehaviour:
   btnStart: {fileID: 924542029}
   boardsTrans: {fileID: 1149392106}
   boardTemplate: {fileID: 2374668571771992113, guid: 30a8b671cc97d924fa9b41de3d8dfb78, type: 3}
-  shipsHandler: {fileID: 2124139108}
+  polyominoesHandler: {fileID: 2124139108}
   boardRows: 9
   boardCols: 9
 --- !u!1 &1225429466
@@ -661,7 +661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f1a901525024cb382666a7d22904c40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CellSize: {x: 100, y: 100}
+  cellSize: {x: 100, y: 100}
 --- !u!1 &1249143417
 GameObject:
   m_ObjectHideFlags: 0
@@ -884,7 +884,7 @@ GameObject:
   - component: {fileID: 2124139107}
   - component: {fileID: 2124139108}
   m_Layer: 5
-  m_Name: ShipsHandler
+  m_Name: Ships Handler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -923,5 +923,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 0}
-  shipTemplate: {fileID: 2894138148056372003, guid: 1fd763d99d8912e4c894256891de2740, type: 3}
-  shipsTrans: {fileID: 0}
+  polyominoTemplate: {fileID: 2894138148056372003, guid: 1fd763d99d8912e4c894256891de2740, type: 3}
+  layout: {fileID: 0}

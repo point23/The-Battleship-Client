@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4199221343527683131}
   m_Layer: 0
-  m_Name: ' ChessTrans'
+  m_Name: ' ChessLayout'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -90,7 +90,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridTemplate: {fileID: 4321285433120922893, guid: 028972d0c39c7f54f9ef6176dc79868a, type: 3}
   gridsLayout: {fileID: 2374668572176156476}
-  chessTrans: {fileID: 4199221343527683131}
+  chessLayout: {fileID: 4199221343527683131}
   rows: 9
   cols: 9
   grids: []
