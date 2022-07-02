@@ -11,9 +11,9 @@ namespace Utilities
         public static void Log(Dictionary<object, object> dict)
         {
             var stackTrace = new StackTrace();
-            var callerMethod = stackTrace.GetFrame(1).GetMethod().Name;
-            var callerClass = stackTrace.GetFrame(1).GetType().Name;
-            var info = $"[{callerClass}] callerMethod -> ";
+            var callerMethod = stackTrace.GetFrame(1).GetMethod();
+            var callerClass = callerMethod.ReflectedType;
+            var info = $"[{callerClass.Name}] {callerMethod.Name} -> ";
             foreach (var kvPair in dict)
             {
                 info += $" {kvPair.Key} : {kvPair.Value}; ";

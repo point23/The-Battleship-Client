@@ -26,12 +26,14 @@ namespace GameBase
             private set => data.topLeft = value;
         }
 
-        public List<Coord> Grids => data.grids;
+        public List<Coord> GridsCoordList => data.grids;
         public int GridsCount => Bounds.height * Bounds.width;
         public List<Grid> GridList => layoutGroup.GetComponentsInChildren<Grid>().ToList();
+        private bool isValid;
 
         public void Start()
         {
+            isValid = true;
             GetComponent<DragDropItem>().onDraggedEvent.AddListener(OnDragged);
             GetComponent<MultiClickHandler>().onMultiClickedEvent.AddListener(OnRotated);
         }
@@ -68,16 +70,6 @@ namespace GameBase
         private void SetLayoutGroup()
         {
             layoutGroup.constraintCount = Bounds.width;
-        }
-        
-        private void RenderGrids()
-        {
-            Debug.Log("[Ship] ship data:" + data.ToJson());
-            var occupiedGrids = Grids.Select(gridCoord => gridCoord.ToIndex(Bounds.width)).ToList();
-            foreach (var grid in GridList)
-            {
-                grid.Render(isActive: occupiedGrids.Contains(grid.Coord.ToIndex(Bounds.width)));
-            }
         }
 
         private void InstantiateGridObjects()
@@ -116,21 +108,36 @@ namespace GameBase
             }
         }
         
-        private bool TryTransition(Vector2Int delta)
+        private bool TryMove(Vector2Int delta)
         {
-            TopLeft += delta;
-            for (var i = 0; i < Grids.Count; i++)
-            {
-                Grids[i] += delta;
-            }
+            if (!handler.AnyGridsInBoundsAfterMove(this, delta))
+                return false;
 
-            return false;
+            TopLeft += delta;
+            for (var i = 0; i < GridsCoordList.Count; i++)
+            {
+                GridsCoordList[i] += delta;
+            }
+            return true;
+        }
+        
+        private void RenderGrids(bool isValid = true)
+        {
+            var occupiedGrids = GridsCoordList.Select(gridCoord => gridCoord.ToIndex(Bounds.width)).ToList();
+            foreach (var grid in GridList)
+            {
+                grid.Render(isActive: occupiedGrids.Contains(grid.Coord.ToIndex(Bounds.width)), isValid);
+            }
         }
 
         #region Event Listeners
         private void OnDragged(Vector2Int delta)
         {
             TopLeft += delta;
+            if (!TryMove(delta) && isValid)
+            {
+                RenderGrids(false);
+            }
             SetPosition();
         }
 

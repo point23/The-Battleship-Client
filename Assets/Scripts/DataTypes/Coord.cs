@@ -44,7 +44,6 @@ namespace DataTypes
         {
             var delta = center - this.ToVector2();
             Vector2 deltaRotated = Quaternion.Euler(0, 0, angle) * delta;
-            // Debug.Log("[Coord] coord" + ToJson() + ", center: " + center + ", delta: " + delta + ", delta1: " + deltaRotated);
             this.Value = (center + deltaRotated);
         }
 
@@ -104,7 +103,12 @@ namespace DataTypes
         {
             return new Vector2Int(x - other.x, y - other.y);        
         }
-        
+
+        public bool IsInBounds(int rows, int cols)
+        {
+            return  x >= 0 && y >= 0 && x < cols && y < rows;
+        }
+
         #endregion
 
     }

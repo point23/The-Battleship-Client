@@ -23,9 +23,20 @@ namespace GameBase
             BtnGrid.onClick.AddListener(OnClicked);
         }
 
-        public void Render(bool isActive)
+        public void Render(bool isActive, bool isValid = true)
         {
-            GridImage.color = isActive ? Color.black : new Color();
+            if (!isActive)
+            {
+                GridImage.color = new Color();
+            }
+            else if (isValid)
+            {
+                GridImage.color = Color.black;
+            }
+            else
+            {
+                GridImage.color = Color.red;
+            }
         }
 
         public string ToJson()

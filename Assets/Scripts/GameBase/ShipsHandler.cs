@@ -38,19 +38,30 @@ namespace GameBase
             var topLeftPos = board.LocalPositionOfCoord(ship.TopLeft);
             var bottomRightCoord = ship.TopLeft + ship.Bounds.ToVector2() - Vector2.one;
             var bottomRightPos = board.LocalPositionOfCoord(bottomRightCoord);
-            DebugLogPos(ship.TopLeft, bottomRightCoord, topLeftPos, bottomRightPos);
+            DebugPG13.Log(new Dictionary<object, object>()
+            {
+                {"top left coord", ship.TopLeft.ToJson()},
+                {"bottom right coord", bottomRightCoord.ToJson()},
+                {"top left pos", topLeftPos},
+                {"bottom right pos", bottomRightPos}
+            });
             ship.transform.localPosition = (1 / 2f) * (topLeftPos + bottomRightPos);
         }
 
-        private void DebugLogPos(Coord topLeft, Coord bottomRight, Vector3 topLeftPos, Vector3 bottomRightPos)
+        public bool AnyGridsInBoundsAfterMove(Ship ship, Vector2Int delta)
         {
-            var info = "";
-            info += $"top left coord: {topLeft.ToJson()}, ";
-            info += $"bottom right coord: {bottomRight.ToJson()}, ";
-            info += $"top left pos: {topLeftPos}, ";
-            info += $"bottom right pos: {bottomRightPos}";
-            info += $"new pos: {(1 / 2f) * (topLeftPos + bottomRightPos)}";
-            Debug.Log(info);
+            for (var i = 0; i < ship.GridsCoordList.Count; i++)
+            {
+                ship.GridsCoordList[i] += delta;
+                if (ship.GridsCoordList[i].IsInBounds(board.rows, board.cols))
+                {
+                    ship.GridsCoordList[i] -= delta;
+                    return true;
+                }
+                ship.GridsCoordList[i] -= delta;
+            }
+
+            return false;
         }
     }
    

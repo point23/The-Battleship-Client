@@ -9,7 +9,7 @@ namespace Utilities
         private readonly Board _board;
         private Coord _begin;
         private Coord _end;
-        public bool IsAvailable => _end.x >= 0 && _end.y >= 0 && _end.x < _board.cols && _end.y < _board.rows;
+        public bool IsAvailable => _end.IsInBounds(_board.rows, _board.cols);
 
         public Diastimeter(Board board)
         {
