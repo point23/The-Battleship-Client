@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using DataTypes;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 using Utilities;
 
 namespace GameBase
@@ -28,18 +24,18 @@ namespace GameBase
         public int GridsCount => Bounds.height * Bounds.width;
         public List<Grid> GridList => layoutGroup.GetComponentsInChildren<Grid>().ToList();
         public DragDropItemGroup DragDropItemGroup => GetComponent<DragDropItemGroup>();
+        public MultiClickItemGroup MultiClickItemGroup => GetComponent<MultiClickItemGroup>();
         
         public void Start()
         {
-            DragDropItemGroup.onDraggedEvent.AddListener(OnDragged);
-            GetComponent<MultiClickHandler>().onMultiClickedEvent.AddListener(OnRotated);
+            DragDropItemGroup.draggedEvent.AddListener(OnDragged);
+            MultiClickItemGroup.multiClickedEvent.AddListener(OnRotated);
         }
 
         public void Init(PolyominoesHandler handler, PolyominoData data)
         {
             this.handler = handler;
             this.data = data;
-            DragDropItemGroup.Init(new Diastimeter(handler.board));
             Render();
         }
 
@@ -50,12 +46,19 @@ namespace GameBase
             InstantiateGridObjects();
             InitGrids();
             RenderGrids();
+            
             InitDragDropGroup();
+            InitMultiClickItemGroup();
+        }
+
+        private void InitMultiClickItemGroup()
+        {
+            MultiClickItemGroup.Init(DragDropItemGroup);
         }
 
         private void InitDragDropGroup()
         {
-            DragDropItemGroup.Init(new Diastimeter(handler.board));
+            DragDropItemGroup.Init(new Diastimeter(handler.board), MultiClickItemGroup);
         }
 
         private void RenderRotation()
@@ -95,14 +98,16 @@ namespace GameBase
                     var gridIndex = coord.ToIndex(Bounds.width);
                     var isOccupied = occupiedGrids.Contains(gridIndex);
                     GridList[gridIndex].Init(new GridData(coord, isOccupied));
+                    
                     GridList[gridIndex].GetComponent<DragDropItem>().isActive = isOccupied;
-                    DebugPG13.Log(new Dictionary<object, object>()
-                    {
-                        {"grid coord", coord.ToJson()},
-                        {"index", coord.ToIndex(Bounds.width)},
-                        {"isOccupied", isOccupied},
-                        {"isActive", GridList[gridIndex].GetComponent<DragDropItem>().isActive}
-                    });
+                    GridList[gridIndex].GetComponent<MultiClickItem>().isActive = isOccupied;
+                    // DebugPG13.Log(new Dictionary<object, object>()
+                    // {
+                    //     {"grid coord", coord.ToJson()},
+                    //     {"index", coord.ToIndex(Bounds.width)},
+                    //     {"isOccupied", isOccupied},
+                    //     {"isActive", GridList[gridIndex].GetComponent<DragDropItem>().isActive}
+                    // });
                 }
             }
         }
@@ -145,16 +150,16 @@ namespace GameBase
         {
             if (TryMove(delta))
             {
-                // DebugPG13.Log(new Dictionary<object, object>() {{"AllGridsInBounds", AllGridsInBounds}});
                 CheckGridsValidity();
                 RenderGrids();
             }
             SetPosition();
         }
         
-        private void OnRotated()
+        private void OnRotated(MultiClickItem item)
         {
             data.Rotate();
+            CheckGridsValidity();
             RenderRotation();
         }
 

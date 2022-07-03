@@ -2,12 +2,11 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using Utilities;
 
-namespace GameBase
+namespace Utilities
 {
     [Serializable]
-    public class DragDropItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+    public class DragDropItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
         public bool isActive;
         public bool isEnabled;
@@ -25,7 +24,7 @@ namespace GameBase
                 if (!isActive)
                     return;
                 
-                GetComponent<CanvasGroup>().alpha = value ? 1f : 0.8f;
+                GetComponent<CanvasGroup>().alpha = value ? 1f : 0.6f;
                 isEnabled = value;
             }
         }
@@ -35,10 +34,7 @@ namespace GameBase
         public void Init(Diastimeter diastimeter)
         {
             _diastimeter = new Diastimeter(diastimeter);
-            IsEnabled = true;
         }
-        
-        public void OnPointerDown(PointerEventData eventData) { }
         
         public void OnBeginDrag(PointerEventData eventData)
         {

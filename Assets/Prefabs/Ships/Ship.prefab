@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 5188512924303426167}
   - component: {fileID: 5188512924303426166}
   - component: {fileID: 5188512924303426165}
-  - component: {fileID: 5188512924303426164}
   - component: {fileID: 2712408499349991372}
+  - component: {fileID: 184357861260806594}
   m_Layer: 0
   m_Name: Ship
   m_TagString: Untagged
@@ -125,6 +125,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bd2ebdd47d54c6d971046b5c9791b64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layoutGroup: {fileID: 5247550542380472930}
+  polyominoGridTemplate: {fileID: 4321285433120922893, guid: 4c0e17f175592f148b806d039af79551, type: 3}
   data:
     bounds:
       width: 0
@@ -134,25 +136,6 @@ MonoBehaviour:
       y: 0
     grids: []
   handler: {fileID: 0}
-  layoutGroup: {fileID: 5247550542380472930}
-  polyominoGridTemplate: {fileID: 4321285433120922893, guid: 4c0e17f175592f148b806d039af79551, type: 3}
---- !u!114 &5188512924303426164
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2894138148056372003}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a23fd0da21034f498103b55e3532fde8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onMultiClickedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  maxCount: 2
-  interval: 0.5
 --- !u!114 &2712408499349991372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,9 +150,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onDragScaleUp: 1.2
   onDragAlphaDelta: 0.8
-  onDraggedEvent:
+  draggedEvent:
     m_PersistentCalls:
       m_Calls: []
+  dragDropItems: []
+--- !u!114 &184357861260806594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2894138148056372003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc21718726fb48f2bdee592201ec47da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxCount: 2
+  interval: 0.6
+  multiClickedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  multiClickItems: []
 --- !u!1 &5641658626761407243
 GameObject:
   m_ObjectHideFlags: 0

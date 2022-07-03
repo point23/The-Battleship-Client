@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using DataTypes;
 using GameBase;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
@@ -12,28 +14,31 @@ namespace Tests
     public class RandomShipsGenerationTest : MonoBehaviour
     {
         public PolyominoesHandler polyominoesHandler;
-        public Button btnGenerateShip;
+        public Transform boardsTrans;
+        public GameObject boardTemplate;
+        public Button btnGenerate;
 
         public void Start()
         {
-            btnGenerateShip.onClick.AddListener(GenerateShip);
-            
-            var shipData = new PolyominoData(
-                    new BoundingBox(2, 2), 
-                    new Coord(2, 2),
-                    new List<Coord>() {new Coord(0, 0), new Coord(0, 1), new Coord(1, 1)});
-            var dataList = new List<PolyominoData>();
-            for (var i = 0; i < 2; i++)
-            {
-                dataList.Add(shipData);
-            }
-            FileHandler.SaveToJSON(dataList, AppManager.TestShipsJsonDataPath);
+            btnGenerate.onClick.AddListener(GenerateShips);
         }
 
-        private void GenerateShip()
+        private async void GenerateShips()
         {
+            var board = await GenerateBoard();
+            polyominoesHandler.Init(board);
+
             var shipsDataList = FileHandler.ReadListFromJSON<PolyominoData>(AppManager.TestShipsJsonDataPath);
             polyominoesHandler.GeneratePolyominoes(shipsDataList);
+            btnGenerate.gameObject.SetActive(false);
+        }
+
+        private async UniTask<Board> GenerateBoard()
+        {
+            var board = Instantiate(boardTemplate, boardsTrans).GetComponent<Board>();
+            board.GenerateGrids(9, 9);
+            await UniTask.DelayFrame(1);
+            return board;
         }
     }
 }

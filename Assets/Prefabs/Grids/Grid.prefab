@@ -142,9 +142,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data:
-    pos:
+    coord:
       x: 0
       y: 0
+    isOccupied: 0
+    isValid: 0
   gridClickedEvent:
     m_PersistentCalls:
       m_Calls: []
