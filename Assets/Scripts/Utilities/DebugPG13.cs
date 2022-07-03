@@ -23,7 +23,12 @@ namespace Utilities
         
         public static void Log(object key, object value)
         {
-            Log(new Dictionary<object, object>() {{key, value}});
+            var stackTrace = new StackTrace();
+            var callerMethod = stackTrace.GetFrame(1).GetMethod();
+            var callerClass = callerMethod.ReflectedType;
+            var info = $"[{callerClass.Name}] {callerMethod.Name} -> ";
+            info += $" {key} : {value}; ";
+            Debug.Log(info);
         }
     }
 }

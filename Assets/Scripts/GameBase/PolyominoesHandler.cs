@@ -30,8 +30,7 @@ namespace GameBase
         public void GeneratePolyomino(PolyominoData data)
         {
             var polyomino = Instantiate(polyominoTemplate, layout).GetComponent<Polyomino>();
-            polyomino.Init(this);
-            polyomino.Render(data);
+            polyomino.Init(this, data);
         }
         
         public void SetPolyominoPosition(Polyomino polyomino)

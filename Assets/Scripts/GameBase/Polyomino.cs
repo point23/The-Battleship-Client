@@ -13,12 +13,10 @@ namespace GameBase
 {
     public class Polyomino : MonoBehaviour
     {
-        [HideInInspector] 
-        public PolyominoData data;
-        public PolyominoesHandler handler;
         public GridLayoutGroup layoutGroup;
         public GameObject polyominoGridTemplate;
-
+        [HideInInspector] public PolyominoData data;
+        [HideInInspector] public PolyominoesHandler handler;
         public BoundingBox Bounds => data.bounds;
         public Coord TopLeft
         {
@@ -29,34 +27,42 @@ namespace GameBase
         public List<Coord> GridsCoordList => data.grids;
         public int GridsCount => Bounds.height * Bounds.width;
         public List<Grid> GridList => layoutGroup.GetComponentsInChildren<Grid>().ToList();
-
+        public DragDropItemGroup DragDropItemGroup => GetComponent<DragDropItemGroup>();
+        
         public void Start()
         {
-            GetComponent<DragDropItem>().onDraggedEvent.AddListener(OnDragged);
+            DragDropItemGroup.onDraggedEvent.AddListener(OnDragged);
             GetComponent<MultiClickHandler>().onMultiClickedEvent.AddListener(OnRotated);
         }
 
-        public void Init(PolyominoesHandler handler)
+        public void Init(PolyominoesHandler handler, PolyominoData data)
         {
             this.handler = handler;
-            GetComponent<DragDropItem>().Init(new Diastimeter(handler.board));
+            this.data = data;
+            DragDropItemGroup.Init(new Diastimeter(handler.board));
+            Render();
         }
 
-        public void Render(PolyominoData data)
+        private void Render()
         {
-            this.data = data;
             SetPosition();
             SetLayoutGroup();
             InstantiateGridObjects();
-            SetGridCoords();
+            InitGrids();
             RenderGrids();
+            InitDragDropGroup();
+        }
+
+        private void InitDragDropGroup()
+        {
+            DragDropItemGroup.Init(new Diastimeter(handler.board));
         }
 
         private void RenderRotation()
         {
             SetLayoutGroup();
             SetPosition();
-            SetGridCoords();
+            InitGrids();
             RenderGrids();
         }
 
@@ -72,28 +78,31 @@ namespace GameBase
 
         private void InstantiateGridObjects()
         {
-            for (var row = 0; row < Bounds.height; row++)
+            for (var count = 0; count < GridsCount; count++)
             {
-                for (var col = 0; col < Bounds.width; col++)
-                {
-                    Instantiate(polyominoGridTemplate, layoutGroup.transform).GetComponent<Grid>();
-                }
+                var grid = Instantiate(polyominoGridTemplate, layoutGroup.transform).GetComponent<Grid>();
             }
         }
-        
-        private void SetGridCoords()
+
+        private void InitGrids()
         {
+            var occupiedGrids = GridsCoordList.Select(gridCoord => gridCoord.ToIndex(Bounds.width)).ToList();
             for (var row = 0; row < Bounds.height; row++)
             {
                 for (var col = 0; col < Bounds.width; col++)
                 {
                     var coord = new Coord(row, col);
-                    // DebugPG13.Log(new Dictionary<object, object>()
-                    // {
-                    //     {"grid coord", coord.ToJson()},
-                    //     {"index", coord.ToIndex(Bounds.width)}
-                    // });
-                    GridList[coord.ToIndex(Bounds.width)].data = new GridData(coord);
+                    var gridIndex = coord.ToIndex(Bounds.width);
+                    var isOccupied = occupiedGrids.Contains(gridIndex);
+                    GridList[gridIndex].Init(new GridData(coord, isOccupied));
+                    GridList[gridIndex].GetComponent<DragDropItem>().isActive = isOccupied;
+                    DebugPG13.Log(new Dictionary<object, object>()
+                    {
+                        {"grid coord", coord.ToJson()},
+                        {"index", coord.ToIndex(Bounds.width)},
+                        {"isOccupied", isOccupied},
+                        {"isActive", GridList[gridIndex].GetComponent<DragDropItem>().isActive}
+                    });
                 }
             }
         }
@@ -115,13 +124,18 @@ namespace GameBase
             return true;
         }
         
-        private void RenderGrids(bool isValid = true)
+        private void RenderGrids()
         {
-            var occupiedGrids = GridsCoordList.Select(gridCoord => gridCoord.ToIndex(Bounds.width)).ToList();
             foreach (var grid in GridList)
             {
-                grid.Render(isActive: occupiedGrids.Contains(grid.Coord.ToIndex(Bounds.width)), isValid);
+                grid.Render();
             }
+        }
+
+        private void CheckGridsValidity()
+        {
+            foreach (var grid in GridList)
+                grid.IsValid = AllGridsInBounds;
         }
 
         private bool AllGridsInBounds => handler.AllGridsInBounds(this);
@@ -132,7 +146,8 @@ namespace GameBase
             if (TryMove(delta))
             {
                 // DebugPG13.Log(new Dictionary<object, object>() {{"AllGridsInBounds", AllGridsInBounds}});
-                RenderGrids(isValid: AllGridsInBounds);
+                CheckGridsValidity();
+                RenderGrids();
             }
             SetPosition();
         }

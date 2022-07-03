@@ -15,7 +15,19 @@ namespace Utilities
         {
             _board = board;
         }
-        
+
+        public Diastimeter(Diastimeter diastimeter)
+        {
+            _board = diastimeter._board;
+            _begin = diastimeter._begin;
+            _end = diastimeter._begin;;
+        }
+
+        public Diastimeter()
+        {
+            
+        }
+
         public void Begin(Vector3 position)
         {
             _begin = _board.CoordOfPosition(position);

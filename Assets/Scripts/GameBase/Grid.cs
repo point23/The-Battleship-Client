@@ -1,4 +1,5 @@
 using DataTypes;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
@@ -8,12 +9,17 @@ namespace GameBase
 {
     public class Grid : MonoBehaviour
     {
-        [HideInInspector]
         public GridData data;
-        [HideInInspector]
         public UnityEvent<GridData> gridClickedEvent;
         public Coord Coord => data.coord;
-        public Vector3 Position => transform.position;
+        public bool IsOccupied => data.isOccupied;
+        [HideInInspector] public bool IsValid
+        {
+            get => data.isValid;
+            set => data.isValid = value;
+        }
+
+        [HideInInspector] public Vector3 Position => transform.position;
         public Vector3 LocalPosition => transform.localPosition;
         private Image GridImage => GetComponentInChildren<Image>();
         private Button BtnGrid => GetComponentInChildren<Button>();
@@ -23,13 +29,18 @@ namespace GameBase
             BtnGrid.onClick.AddListener(OnClicked);
         }
 
-        public void Render(bool isActive, bool isValid = true)
+        public void Init(GridData data)
         {
-            if (!isActive)
+            this.data = data;
+        }
+
+        public void Render()
+        {
+            if (!IsOccupied)
             {
                 GridImage.color = new Color();
             }
-            else if (isValid)
+            else if (IsValid)
             {
                 GridImage.color = Color.black;
             }

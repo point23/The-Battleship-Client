@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4321285433120922892}
   - component: {fileID: 6616645990802885724}
+  - component: {fileID: 6602229641385693965}
+  - component: {fileID: 4361180747160241367}
   m_Layer: 0
   m_Name: Ship Grid
   m_TagString: Untagged
@@ -52,12 +54,48 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data:
-    pos:
+    coord:
       x: 0
       y: 0
+    isOccupied: 0
+    isValid: 0
   gridClickedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!225 &6602229641385693965
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4321285433120922893}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &4361180747160241367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4321285433120922893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843ae1c139678bd40bf18be7ceaab30c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onDraggedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onBeginDragEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onEndDragEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  isActive: 0
 --- !u!1 &4321285433147268953
 GameObject:
   m_ObjectHideFlags: 0
