@@ -48,7 +48,13 @@ namespace DataTypes
 
         public void RotateClockwiseAround(Vector2 center, float angle)
         {
-            var delta = center - ToVector2();
+            // .(this) <-delta- .(center)
+            var delta = ToVector2() - center;
+            //      .(this)
+            //      ⬆
+            //    delta
+            //      |
+            //      .(center)
             Vector2 deltaRotated = Quaternion.Euler(0, 0, angle) * delta;
             Value = (center + deltaRotated);
         }

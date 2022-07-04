@@ -34,7 +34,12 @@ namespace DataTypes
         {
             return new Vector2(height, width);
         }
-        
+
+        public Vector2 ToDiagonalVector()
+        {
+            return ToVector2() - Vector2.one;
+        }
+
         public string ToJson()
         {
             return JsonUtility.ToJson(this);

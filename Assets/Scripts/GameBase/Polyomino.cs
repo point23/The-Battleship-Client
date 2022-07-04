@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using DataTypes;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,23 +16,27 @@ namespace GameBase
         public GameObject polyominoGridTemplate;
         [HideInInspector] public PolyominoData data;
         [HideInInspector] public PolyominoesHandler handler;
-        public BoundingBox Bounds => data.Bounds;
 
+        #region Properties
+
+        private BoundingBox Bounds => data.bounds;
+        private int Angle => data.angle;
         public Coord TopLeft
         {
             get => data.topLeft;
             private set => data.topLeft = value;
         }
-
-        public Coord BottomRight => data.topLeft + data.diagonalVector;
-        public Vector2Int DiagonalVector => data.diagonalVector;
-
+        public Coord BottomRight => TopLeft + DiagonalVector;
+        public Vector2 DiagonalVector => RotateVectorClockwise(Bounds.ToDiagonalVector(), Angle);
         public List<Coord> GridsCoordList => data.grids;
-        public int GridsCount => Bounds.height * Bounds.width;
-        public List<Grid> GridList => layoutGroup.GetComponentsInChildren<Grid>().ToList();
-        public DragDropItemGroup DragDropItemGroup => GetComponent<DragDropItemGroup>();
-        public MultiClickItemGroup MultiClickItemGroup => GetComponent<MultiClickItemGroup>();
+        private int GridsCount => Bounds.height * Bounds.width;
+        private List<Grid> GridList => layoutGroup.GetComponentsInChildren<Grid>().ToList();
+        private DragDropItemGroup DragDropItemGroup => GetComponent<DragDropItemGroup>();
+        private MultiClickItemGroup MultiClickItemGroup => GetComponent<MultiClickItemGroup>();
+        private bool AllGridsInBounds => handler.AllGridsInBounds(this);
 
+        #endregion
+        
         public void Start()
         {
             DragDropItemGroup.draggedEvent.AddListener(OnDragged);
@@ -152,15 +154,17 @@ namespace GameBase
                 grid.IsValid = AllGridsInBounds;
         }
 
-        private bool AllGridsInBounds => handler.AllGridsInBounds(this);
-
         public Coord FromLocalToWorldCoord(Coord localCoord)
         {
             var coord = new Coord(TopLeft);
-            var angleRotated = Vector3.Angle(new Vector3(1, 1, 0), data.DiagonalVector3);
-            var delta = Quaternion.Euler(0, 0, -angleRotated) * localCoord.ToVector2();
+            var delta = RotateVectorClockwise(localCoord.ToVector2(), Angle);
             coord += delta;
             return coord;
+        }
+
+        private Vector3 RotateVectorClockwise(Vector2 vector, int angle)
+        {
+            return Quaternion.Euler(0, 0, angle) * vector;
         }
 
         private void RotateClockwiseAround(Vector2 centerPoint)
@@ -187,12 +191,15 @@ namespace GameBase
             {
                 {"center coord before", item.GetComponent<Grid>().Coord.ToJson()},
                 {"center before", FromLocalToWorldCoord(item.GetComponent<Grid>().Coord).ToVector2()},
-                {"diagonal before", DiagonalVector}
+                {"diagonal before", DiagonalVector},
+                {"topLeft before", TopLeft.ToJson()}
             });
             RotateClockwiseAround(FromLocalToWorldCoord(item.GetComponent<Grid>().Coord).ToVector2());
             DebugPG13.Log(new Dictionary<object, object>()
             {
-                {"diagonal after", DiagonalVector}
+                {"diagonal after", DiagonalVector},
+                {"center after", FromLocalToWorldCoord(item.GetComponent<Grid>().Coord).ToVector2()},
+                {"topLeft after", TopLeft.ToJson()}
             });
             CheckGridsValidity();
             RenderRotation();

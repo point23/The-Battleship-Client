@@ -16,10 +16,7 @@ namespace Tests
         public PolyominoesHandler polyominoesHandler;
         public Transform boardsTrans;
         public GameObject boardTemplate;
-        public GameObject testShipObject1;
-        public GameObject testShipObject2;
-        public GameObject testShipObject3;
-        
+
         // public Button btnWriteShipData;
         public Button btnGenerate;
 
@@ -33,12 +30,13 @@ namespace Tests
         {
             var shipData1 = new PolyominoData(
                 new Coord(2, 2),
-                new Vector2Int(1, 1),
+                new BoundingBox(2, 2),
+                0,
                 new List<Coord>() {new Coord(0, 0), new Coord(0, 1), new Coord(1, 1)});
-
             var shipData2 = new PolyominoData(
                 new Coord(6, 6),
-                new Vector2Int(0, 1),
+                new BoundingBox(2, 1),
+                0,
                 new List<Coord>() {new Coord(0, 0), new Coord(0, 1)});
 
             var dataList = new List<PolyominoData>();

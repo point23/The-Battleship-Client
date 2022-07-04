@@ -36,12 +36,12 @@ namespace GameBase
         public void SetPolyominoPosition(Polyomino polyomino)
         {
             var topLeftPos = board.LocalPositionOfCoord(polyomino.TopLeft);
-            var bottomRightCoord = polyomino.TopLeft + polyomino.DiagonalVector;
-            var bottomRightPos = board.LocalPositionOfCoord(bottomRightCoord);
+            var bottomRightPos = board.LocalPositionOfCoord(polyomino.BottomRight);
             DebugPG13.Log(new Dictionary<object, object>()
             {
                 {"top left coord", polyomino.TopLeft.ToJson()},
-                {"bottom right coord", bottomRightCoord.ToJson()},
+                {"diagonal", polyomino.DiagonalVector},
+                {"bottom right coord", polyomino.BottomRight.ToJson()},
                 {"top left pos", topLeftPos},
                 {"bottom right pos", bottomRightPos}
             });
