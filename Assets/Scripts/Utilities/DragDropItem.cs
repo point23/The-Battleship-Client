@@ -48,7 +48,6 @@ namespace Utilities
         {
             if (!isActive || !IsEnabled)
                 return;
-            // DebugPG13.Log("GameObject Name", gameObject.name);
             _diastimeter.End();
             onEndDragEvent.Invoke(this);
         }

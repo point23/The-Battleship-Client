@@ -6,8 +6,8 @@ namespace DataTypes
     [Serializable]
     public class Coord
     {
-        public static Coord zero => new Coord(0, 0);
-        public static Coord one => new Coord(1, 1);
+        public static Coord Zero => new Coord(0, 0);
+        public static Coord One => new Coord(1, 1);
         
         public int x;
         public int y;
@@ -115,11 +115,6 @@ namespace DataTypes
             return new Vector2Int(x - other.x, y - other.y);        
         }
 
-        public bool IsInBounds(int rows, int cols)
-        {
-            return  x >= 0 && y >= 0 && x < cols && y < rows;
-        }
-        
         #endregion
 
     }

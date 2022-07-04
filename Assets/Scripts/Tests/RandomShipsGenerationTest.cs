@@ -16,34 +16,24 @@ namespace Tests
         public PolyominoesHandler polyominoesHandler;
         public Transform boardsTrans;
         public GameObject boardTemplate;
-
-        // public Button btnWriteShipData;
+        public Button btnWriteShipData;
         public Button btnGenerate;
+        [Header("ShipDataList")]
+        [SerializeField] public List<PolyominoData> testShipDataList;
 
         public void Start()
         {
             btnGenerate.onClick.AddListener(GenerateShips);
-            // WriteTestShipData();
+            btnWriteShipData.onClick.AddListener(WriteTestShipData);
         }
 
-        private static void WriteTestShipData()
+        private void WriteTestShipData()
         {
-            var shipData1 = new PolyominoData(
-                new Coord(2, 2),
-                new BoundingBox(2, 2),
-                0,
-                new List<Coord>() {new Coord(0, 0), new Coord(0, 1), new Coord(1, 1)});
-            var shipData2 = new PolyominoData(
-                new Coord(6, 6),
-                new BoundingBox(2, 1),
-                0,
-                new List<Coord>() {new Coord(0, 0), new Coord(0, 1)});
-
-            var dataList = new List<PolyominoData>();
-            dataList.Add(shipData1);
-            dataList.Add(shipData2);
-
-            FileHandler.SaveToJSON(dataList, AppManager.TestShipsJsonDataPath);
+            if (testShipDataList.Count == 0)
+            {
+                return;
+            }
+            FileHandler.SaveToJSON(testShipDataList, AppManager.TestShipsJsonDataPath);
         }
 
         private async void GenerateShips()
@@ -54,6 +44,7 @@ namespace Tests
             var shipsDataList = FileHandler.ReadListFromJSON<PolyominoData>(AppManager.TestShipsJsonDataPath);
             polyominoesHandler.GeneratePolyominoes(shipsDataList);
             btnGenerate.gameObject.SetActive(false);
+            btnWriteShipData.gameObject.SetActive(false);
         }
 
         private async UniTask<Board> GenerateBoard()

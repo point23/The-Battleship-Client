@@ -37,52 +37,52 @@ namespace GameBase
         {
             var topLeftPos = board.LocalPositionOfCoord(polyomino.TopLeft);
             var bottomRightPos = board.LocalPositionOfCoord(polyomino.BottomRight);
-            DebugPG13.Log(new Dictionary<object, object>()
-            {
-                {"top left coord", polyomino.TopLeft.ToJson()},
-                {"diagonal", polyomino.DiagonalVector},
-                {"bottom right coord", polyomino.BottomRight.ToJson()},
-                {"top left pos", topLeftPos},
-                {"bottom right pos", bottomRightPos}
-            });
+            // DebugPG13.Log(new Dictionary<object, object>()
+            // {
+            //     {"top left coord", polyomino.TopLeft.ToJson()},
+            //     {"diagonal", polyomino.DiagonalVector},
+            //     {"bottom right coord", polyomino.BottomRight.ToJson()},
+            //     {"top left pos", topLeftPos},
+            //     {"bottom right pos", bottomRightPos}
+            // });
             polyomino.transform.localPosition = (1 / 2f) * (topLeftPos + bottomRightPos);
         }
 
         public bool AnyGridsInBoundsAfterMove(Polyomino polyomino, Vector2Int delta)
         {
-            for (var i = 0; i < polyomino.GridsCoordList.Count; i++)
+            foreach (var coord in polyomino.GridsCoordList)
             {
-                if (IsGridInBoundsAfterMove(polyomino, i, delta))
+                var coordInWorldSpace = polyomino.FromLocalToWorldCoord(coord);
+                coordInWorldSpace += delta;
+                // DebugPG13.Log(new Dictionary<object, object>()
+                // {
+                //     {"coord before", (coordInWorldSpace - delta).ToJson()},
+                //     {"coord after", coordInWorldSpace.ToJson()},
+                //     {"is in bounds", IsGridInBounds(coordInWorldSpace)}
+                // });
+                if (IsGridInBounds(coordInWorldSpace))
                     return true;
             }
+
             return false;
         }
 
         public bool AllGridsInBounds(Polyomino polyomino)
         {
-            for (var i = 0; i < polyomino.GridsCoordList.Count; i++)
+            foreach (var coord in polyomino.GridsCoordList)
             {
-                if (!IsGridInBounds(polyomino, i))
+                var coordInWorldSpace = polyomino.FromLocalToWorldCoord(coord);
+                if (!IsGridInBounds(coordInWorldSpace))
                 {
                     return false;
                 }
             }
             return true;
         }
-        
-        private bool IsGridInBoundsAfterMove(Polyomino polyomino, int index, Vector2Int delta)
+
+        private bool IsGridInBounds(Coord coord)
         {
-            var coord = new Coord(polyomino.TopLeft.x, polyomino.TopLeft.y);
-            coord += polyomino.GridsCoordList[index].ToVector2Int();
-            coord += delta;
-            
-            return coord.IsInBounds(board.rows, board.cols);
-        }
-        
-        private bool IsGridInBounds(Polyomino polyomino, int index)
-        {
-            var coord = polyomino.FromLocalToWorldCoord(polyomino.GridsCoordList[index]);
-            return coord.IsInBounds(board.rows, board.cols);
+            return board.BoundingBox.IsCoordIn(coord);
         }
     }
    

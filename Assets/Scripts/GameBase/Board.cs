@@ -18,6 +18,7 @@ namespace GameBase
         public int cols = 9;
         public List<Grid> grids;
         public Bounds Bounds => GetComponent<BoxCollider>().bounds;
+        public BoundingBox BoundingBox => new BoundingBox(cols, rows);
         private Vector2 CellSize
         {
             get => gridsLayout.cellSize;
@@ -58,13 +59,13 @@ namespace GameBase
 
         public Vector3 LocalPositionOfCoord(Coord coord)
         {
-            if (coord.IsInBounds(rows, cols))
+            if (BoundingBox.IsCoordIn(coord))
             {
                 var index = coord.ToIndex(cols);
                 return grids[index].transform.localPosition;
             }
             
-            var delta = coord.CalculateDelta(Coord.zero);
+            var delta = coord.CalculateDelta(Coord.Zero);
             var displacement = new Vector2(delta.y, -delta.x) * CellSize;
             var pos = TopLeftPos + (Vector3) displacement;
             return pos;

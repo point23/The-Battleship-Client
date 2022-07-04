@@ -30,6 +30,13 @@ namespace DataTypes
             (width, height) = (height, width);
         }
 
+        public bool IsCoordIn(Coord coord)
+        {
+            return  coord.x >= 0 && coord.y >= 0 && coord.x < width && coord.y < height;
+        }
+
+        #region Convertors
+
         public Vector2 ToVector2()
         {
             return new Vector2(height, width);
@@ -44,6 +51,8 @@ namespace DataTypes
         {
             return JsonUtility.ToJson(this);
         }
+
+        #endregion
 
     }
 }

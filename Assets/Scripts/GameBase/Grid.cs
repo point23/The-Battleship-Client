@@ -7,8 +7,11 @@ namespace GameBase
 {
     public class Grid : MonoBehaviour
     {
-        [HideInInspector] public GridData data;
-        public UnityEvent<GridData> gridClickedEvent;
+        public GridData data;
+        [HideInInspector] public UnityEvent<GridData> gridClickedEvent;
+
+        #region Properties
+
         public Coord Coord => data.coord;
         public bool IsOccupied => data.isOccupied;
         public bool IsValid
@@ -16,20 +19,21 @@ namespace GameBase
             get => data.isValid;
             set => data.isValid = value;
         }
-
-        [HideInInspector] public Vector3 Position => transform.position;
+        public Vector3 Position => transform.position;
         public Vector3 LocalPosition => transform.localPosition;
         private Image GridImage => GetComponentInChildren<Image>();
         private Button BtnGrid => GetComponentInChildren<Button>();
+
+        #endregion
 
         public void Start()
         {
             BtnGrid.onClick.AddListener(OnClicked);
         }
 
-        public void Init(GridData data)
+        public void Init(GridData gridData)
         {
-            this.data = data;
+            data = gridData;
         }
 
         public void Render()

@@ -9,7 +9,7 @@ namespace Utilities
         private readonly Board _board;
         private Coord _begin;
         private Coord _end;
-        public bool IsAvailable => _end.IsInBounds(_board.rows, _board.cols);
+        public bool IsAvailable => _board.BoundingBox.IsCoordIn(_end);
 
         public Diastimeter(Board board)
         {
@@ -41,8 +41,8 @@ namespace Utilities
 
         public void End()
         {
-            _begin = Coord.zero; 
-            _end = Coord.zero;
+            _begin = Coord.Zero; 
+            _end = Coord.Zero;
         }
 
         public string ToJson()

@@ -187,23 +187,23 @@ namespace GameBase
 
         private void OnRotated(MultiClickItem item)
         {
-            DebugPG13.Log(new Dictionary<object, object>()
-            {
-                {"center coord before", item.GetComponent<Grid>().Coord.ToJson()},
-                {"center before", FromLocalToWorldCoord(item.GetComponent<Grid>().Coord).ToVector2()},
-                {"diagonal before", DiagonalVector},
-                {"topLeft before", TopLeft.ToJson()}
-            });
+            // DebugPG13.Log(new Dictionary<object, object>()
+            // {
+            //     {"center coord before", item.GetComponent<Grid>().Coord.ToJson()},
+            //     {"center before", FromLocalToWorldCoord(item.GetComponent<Grid>().Coord).ToVector2()},
+            //     {"diagonal before", DiagonalVector},
+            //     {"topLeft before", TopLeft.ToJson()}
+            // });
             RotateClockwiseAround(FromLocalToWorldCoord(item.GetComponent<Grid>().Coord).ToVector2());
-            DebugPG13.Log(new Dictionary<object, object>()
-            {
-                {"diagonal after", DiagonalVector},
-                {"center after", FromLocalToWorldCoord(item.GetComponent<Grid>().Coord).ToVector2()},
-                {"topLeft after", TopLeft.ToJson()}
-            });
+            // DebugPG13.Log(new Dictionary<object, object>()
+            // {
+            //     {"diagonal after", DiagonalVector},
+            //     {"center after", FromLocalToWorldCoord(item.GetComponent<Grid>().Coord).ToVector2()},
+            //     {"topLeft after", TopLeft.ToJson()}
+            // });
             CheckGridsValidity();
             RenderRotation();
-            DebugPG13.Log("Ship Data", data.ToJson());
+            // DebugPG13.Log("Ship Data", data.ToJson());
         }
         
         #endregion

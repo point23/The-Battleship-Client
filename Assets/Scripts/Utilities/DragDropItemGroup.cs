@@ -28,8 +28,8 @@ namespace Utilities
             foreach (var dragDropItem in dragDropItems)
             {
                 dragDropItem.onDraggedEvent.AddListener(OnDragged);
-                dragDropItem.onBeginDragEvent.AddListener(RenderBeginDrag);
-                dragDropItem.onEndDragEvent.AddListener(RenderEndDrag);
+                dragDropItem.onBeginDragEvent.AddListener(OnBeginDrag);
+                dragDropItem.onEndDragEvent.AddListener(OnEndDrag);
                 dragDropItem.Init(_diastimeter);
             }
             SetAllItems(true);
@@ -49,20 +49,30 @@ namespace Utilities
             draggedEvent.Invoke(delta);
         }
         
-        private void RenderBeginDrag(DragDropItem chosenOne)
+        private void OnBeginDrag(DragDropItem chosenOne)
         {
+            RenderBeginDrag();
             SetAllItemsExcept(chosenOne, false);
-            transform.localScale = Vector3.one * onDragScaleUp;
-            _canvasGroup.alpha = onDragAlphaDelta;
             _multiClickItemGroup.SetAllItems(false);
         }
-        
-        private void RenderEndDrag(DragDropItem chosenOne)
+
+        private void OnEndDrag(DragDropItem chosenOne)
         {
-            SetAllItemsExcept(chosenOne, true);
+            RenderEndDrag();
+            SetAllItems(true);
+            _multiClickItemGroup.SetAllItems(true);
+        }
+
+        private void RenderBeginDrag()
+        {
+            transform.localScale = Vector3.one * onDragScaleUp;
+            _canvasGroup.alpha = onDragAlphaDelta;
+        }
+        
+        private void RenderEndDrag()
+        {
             transform.localScale = Vector3.one;
             _canvasGroup.alpha = 1f;
-            _multiClickItemGroup.SetAllItems(true);
         }
 
         private void SetAllItemsExcept(DragDropItem chosenOne, bool isEnabled)
