@@ -8,9 +8,17 @@ namespace Utilities
 {
     public static class DebugPG13
     {
-        public static void Log(Dictionary<object, object> dict)
+
+        public static void Log(Dictionary<object, object> dict, string parentCaller=null)
         {
             var stackTrace = new StackTrace();
+            if (parentCaller != null)
+            {
+                var parentCallerMethod = stackTrace.GetFrame(2).GetMethod();
+                if (parentCallerMethod.Name != parentCaller)
+                    return;
+            }
+            
             var callerMethod = stackTrace.GetFrame(1).GetMethod();
             var callerClass = callerMethod.ReflectedType;
             var info = $"[{callerClass.Name}] {callerMethod.Name} -> ";
@@ -21,9 +29,16 @@ namespace Utilities
             Debug.Log(info);
         }
         
-        public static void Log(object key, object value)
+        public static void Log(object key, object value, string parentCaller=null)
         {
             var stackTrace = new StackTrace();
+            if (parentCaller != null)
+            {
+                var parentCallerMethod = stackTrace.GetFrame(2).GetMethod();
+                if (parentCallerMethod.Name != parentCaller)
+                    return;
+            }
+            
             var callerMethod = stackTrace.GetFrame(1).GetMethod();
             var callerClass = callerMethod.ReflectedType;
             var info = $"[{callerClass.Name}] {callerMethod.Name} -> ";

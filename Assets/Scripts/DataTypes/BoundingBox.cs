@@ -18,11 +18,11 @@ namespace DataTypes
             this.width = width;
             this.height = height;
         }
-
-        public BoundingBox(Vector2Int size)
+        
+        public BoundingBox(Vector2Int diagonalVector)
         {
-            width = size.x;
-            height = size.y;
+            width = Math.Abs(diagonalVector.y) + 1;
+            height = Math.Abs(diagonalVector.x) + 1;
         }
 
         public void Swap()

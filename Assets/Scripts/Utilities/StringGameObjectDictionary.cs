@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DataTypes
+namespace Utilities
 {
     [Serializable]
     public class StringGameObjectDictionary : MonoBehaviour

@@ -36,7 +36,7 @@ namespace GameBase
         public void SetPolyominoPosition(Polyomino polyomino)
         {
             var topLeftPos = board.LocalPositionOfCoord(polyomino.TopLeft);
-            var bottomRightCoord = polyomino.TopLeft + polyomino.Bounds.ToVector2() - Vector2.one;
+            var bottomRightCoord = polyomino.TopLeft + polyomino.DiagonalVector;
             var bottomRightPos = board.LocalPositionOfCoord(bottomRightCoord);
             DebugPG13.Log(new Dictionary<object, object>()
             {
@@ -75,26 +75,14 @@ namespace GameBase
             var coord = new Coord(polyomino.TopLeft.x, polyomino.TopLeft.y);
             coord += polyomino.GridsCoordList[index].ToVector2Int();
             coord += delta;
-
-            if (coord.IsInBounds(board.rows, board.cols))
-            {
-                return true;
-            }
-
-            return false;
+            
+            return coord.IsInBounds(board.rows, board.cols);
         }
         
         private bool IsGridInBounds(Polyomino polyomino, int index)
         {
-            var coord = new Coord(polyomino.TopLeft.x, polyomino.TopLeft.y);
-            coord += polyomino.GridsCoordList[index].ToVector2Int();
-
-            if (coord.IsInBounds(board.rows, board.cols))
-            {
-                return true;
-            }
-
-            return false;
+            var coord = polyomino.FromLocalToWorldCoord(polyomino.GridsCoordList[index]);
+            return coord.IsInBounds(board.rows, board.cols);
         }
     }
    

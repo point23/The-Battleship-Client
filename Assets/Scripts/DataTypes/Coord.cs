@@ -40,11 +40,17 @@ namespace DataTypes
             Col = col;
         }
 
-        public void RotateAroundClockwise(Vector2 center, float angle)
+        public Coord(Coord other)
         {
-            var delta = center - this.ToVector2();
+            Row = other.Row;
+            Col = other.Col;
+        }
+
+        public void RotateClockwiseAround(Vector2 center, float angle)
+        {
+            var delta = center - ToVector2();
             Vector2 deltaRotated = Quaternion.Euler(0, 0, angle) * delta;
-            this.Value = (center + deltaRotated);
+            Value = (center + deltaRotated);
         }
 
         #region Convertors
@@ -71,7 +77,6 @@ namespace DataTypes
 
         #endregion
 
-
         #region Operators
 
         public static Coord operator -(Coord coord, Vector2Int delta)
@@ -86,12 +91,12 @@ namespace DataTypes
 
         public static Coord operator -(Coord coord, Vector2 delta)
         {
-            return new Coord(coord.x - (int) delta.x, coord.y - (int) delta.y);
+            return new Coord(coord.x - Convert.ToInt32(delta.x), coord.y - Convert.ToInt32(delta.y));
         }
         
         public static Coord operator +(Coord coord, Vector2 delta)
         {
-            return new Coord(coord.x + (int) delta.x, coord.y + (int) delta.y);
+            return new Coord(coord.x +  Convert.ToInt32(delta.x), coord.y + Convert.ToInt32(delta.y));
         }
 
         public Vector2 CalculateDelta(Coord other)
@@ -108,7 +113,7 @@ namespace DataTypes
         {
             return  x >= 0 && y >= 0 && x < cols && y < rows;
         }
-
+        
         #endregion
 
     }
