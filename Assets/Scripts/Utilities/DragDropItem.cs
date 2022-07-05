@@ -16,6 +16,16 @@ namespace Utilities
         public UnityEvent<DragDropItem> onBeginDragEvent = new UnityEvent<DragDropItem>();
         public UnityEvent<DragDropItem> onEndDragEvent = new UnityEvent<DragDropItem>();
         
+        public bool IsActive
+        {
+            get => isActive;
+            set
+            {
+                isActive = value;
+                GetComponent<CanvasGroup>().blocksRaycasts = isActive;
+            }
+        }
+        
         public bool IsEnabled
         {
             get => isEnabled;
@@ -39,19 +49,23 @@ namespace Utilities
         
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (!isActive || !IsEnabled)
+            if (!IsActive || !IsEnabled)
                 return;
+            
             _diastimeter.Begin(eventData.position);
         }
         
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if (!IsActive || !IsEnabled)
+                return;
+            
             onBeginDragEvent.Invoke(this);
         }
   
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (!isActive || !IsEnabled)
+            if (!IsActive || !IsEnabled)
                 return;
             _diastimeter.End();
             onEndDragEvent.Invoke(this);
@@ -59,7 +73,7 @@ namespace Utilities
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (!isActive || !IsEnabled)
+            if (!IsActive || !IsEnabled)
                 return;
             
             var delta = _diastimeter.CalculateDelta(eventData.position);

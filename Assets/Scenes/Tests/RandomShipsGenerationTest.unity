@@ -977,20 +977,48 @@ MonoBehaviour:
       x: 4
       y: 4
     bounds:
-      width: 5
-      height: 1
+      width: 1
+      height: 2
+    angle: 0
+    gridCoords:
+    - x: 0
+      y: 0
+    - x: 1
+      y: 0
+  - topLeft:
+      x: 6
+      y: 1
+    bounds:
+      width: 2
+      height: 3
+    angle: 0
+    gridCoords:
+    - x: 0
+      y: 0
+    - x: 1
+      y: 0
+    - x: 1
+      y: 1
+    - x: 2
+      y: 1
+  - topLeft:
+      x: 0
+      y: 6
+    bounds:
+      width: 2
+      height: 3
     angle: 0
     gridCoords:
     - x: 0
       y: 0
     - x: 0
       y: 1
-    - x: 0
-      y: 2
-    - x: 0
-      y: 3
-    - x: 0
-      y: 4
+    - x: 1
+      y: 0
+    - x: 1
+      y: 1
+    - x: 2
+      y: 1
 --- !u!1 &1225429466
 GameObject:
   m_ObjectHideFlags: 0

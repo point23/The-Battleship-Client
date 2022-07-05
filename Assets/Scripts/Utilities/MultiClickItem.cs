@@ -12,12 +12,23 @@ namespace Utilities
     {
         public bool isActive;
         public bool isEnabled;
+        
+        public bool IsActive
+        {
+            get => isActive;
+            set
+            {
+                isActive = value;
+                GetComponent<CanvasGroup>().blocksRaycasts = isActive;
+            }
+        }
+        
         public bool IsEnabled
         {
             get => isEnabled;
             set
             {
-                if (!isActive)
+                if (!IsActive)
                     return;
                 isEnabled = value;
             }
@@ -45,7 +56,7 @@ namespace Utilities
 
         private void OnClick()
         {
-            if (!isActive || !IsEnabled)
+            if (!IsActive || !IsEnabled)
                 return;
             
             _counter += 1;
@@ -67,7 +78,7 @@ namespace Utilities
         
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (!isActive || !IsEnabled)
+            if (!IsActive || !IsEnabled)
                 return;
 
             ToolTipHandler.instance.Generate("rotate", transform);
