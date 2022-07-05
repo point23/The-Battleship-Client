@@ -20,15 +20,28 @@ namespace GameBase
             get => data.isValid;
             set => data.isValid = value;
         }
+        
+        public bool IsInteractable
+        {
+            get => BtnGrid.interactable;
+            set => BtnGrid.interactable = value;
+        }
+        
+        private Button BtnGrid => GetComponent<Button>();
+
         public Vector3 Position => transform.position;
         public Vector3 LocalPosition => transform.localPosition;
+        public UnityEvent<Coord> onGridClicked;
+        
         private Image GridImage => GetComponentInChildren<Image>();
 
         #endregion
         
-        public void Init(GridData gridData)
+        public void Init(GridData gridData, bool isInteractable=true)
         {
             data = gridData;
+            IsInteractable = isInteractable;
+            BtnGrid.onClick.AddListener(OnClick);
         }
 
         public void Render()
@@ -46,10 +59,19 @@ namespace GameBase
                 GridImage.color = Color.red;
             }
         }
-
-        public string ToJson()
+        
+        private void OnClick()
         {
-            return data.ToJson();
+            onGridClicked.Invoke(Coord);
         }
+
+        #region Convertors
+
+        public override string ToString()
+        {
+            return data.ToString();
+        }
+
+        #endregion
     }
 }

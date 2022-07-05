@@ -22,9 +22,18 @@ namespace DataTypes
             coord = new Coord(x, y);
         }
 
+        #region Convertors
+
+        public override string ToString()
+        {
+            return ToJson();
+        }
+
         public string ToJson()
         {
             return JsonUtility.ToJson(this);
         }
+        
+        #endregion
     }
 }

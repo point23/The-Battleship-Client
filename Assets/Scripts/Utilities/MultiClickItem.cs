@@ -19,10 +19,10 @@ namespace Utilities
             set
             {
                 isActive = value;
-                GetComponent<CanvasGroup>().blocksRaycasts = isActive;
+                isEnabled = value;
             }
         }
-        
+
         public bool IsEnabled
         {
             get => isEnabled;
@@ -31,6 +31,7 @@ namespace Utilities
                 if (!IsActive)
                     return;
                 isEnabled = value;
+                GetComponent<CanvasGroup>().blocksRaycasts = isActive;
             }
         }
         

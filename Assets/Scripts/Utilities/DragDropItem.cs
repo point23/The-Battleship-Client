@@ -22,21 +22,21 @@ namespace Utilities
             set
             {
                 isActive = value;
-                GetComponent<CanvasGroup>().blocksRaycasts = isActive;
+                isEnabled = value;
             }
         }
         
         public bool IsEnabled
         {
             get => isEnabled;
-            // todo: only used in test mode
             set
             {
                 if (!isActive)
                     return;
-                
-                GetComponent<CanvasGroup>().alpha = value ? 1f : 0.6f;
+
                 isEnabled = value;
+                GetComponent<CanvasGroup>().alpha = isEnabled ? 1f : 0.6f;
+                GetComponent<CanvasGroup>().blocksRaycasts = isActive;
             }
         }
 

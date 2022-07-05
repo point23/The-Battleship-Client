@@ -5,11 +5,13 @@ using DataTypes;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Utilities;
 
 namespace GameBase
 {
     public class Board : MonoBehaviour
     {
+        public bool isInteractable;
         public GameObject gridTemplate;
         public GameObject polyominoesHandlerTemplate;
         public GridLayoutGroup gridsLayout;
@@ -17,7 +19,6 @@ namespace GameBase
         public int rows = 9;
         public int cols = 9;
         public List<Grid> grids;
-        public UnityEvent<GridData> onGridClickedEvent;
         private Dictionary<Coord, List<Polyomino>> _coordPolyominosDictionary;
         [HideInInspector] public PolyominoesHandler polyominoesHandler;
 
@@ -41,18 +42,19 @@ namespace GameBase
         private float Height => CellSize.y * rows;
         private float Width => CellSize.x * cols;
         private Vector3 Size => new Vector3(Height, Width);
-
+        private bool IsInteractable
+        {
+            get => grids.All(grid => grid.IsInteractable);
+            set => grids.ForEach(grid => grid.IsInteractable = value);
+        }
         #endregion
         
         public void Awake()
         {
-            CellSize = AppManager.instance.cellSize;
-            grids = new List<Grid>();
-            Collider.size = Size;
-            _coordPolyominosDictionary = new Dictionary<Coord, List<Polyomino>>();
+            Init();
             GeneratePolyominoesHandler();
         }
-        
+
         public void GenerateGrids(int newRows=default, int newCols=default)
         {
             rows = newRows == default ? rows : newRows;
@@ -101,6 +103,15 @@ namespace GameBase
             AddPolyominoToCoordPolyominosDict(polyomino);
             CheckValidity();
         }
+        
+        private void Init()
+        {
+            CellSize = AppManager.instance.cellSize;
+            Collider.size = Size;
+            IsInteractable = true;
+            grids = new List<Grid>();
+            _coordPolyominosDictionary = new Dictionary<Coord, List<Polyomino>>();
+        }
 
         private bool IsCoordIn(Coord coord)
         {
@@ -111,14 +122,7 @@ namespace GameBase
         {
             foreach (var polyomino in Polyominos)
             {
-                polyomino.IsGridsValid = true;
-                foreach (var coord in polyomino.GridCoordsInWorldSpace)
-                {
-                    if (_coordPolyominosDictionary[coord].Count <= 1) continue;
-                    
-                    polyomino.IsGridsValid = false;
-                    break;
-                }
+                polyomino.IsGridsValid = polyomino.GridCoordsInWorldSpace.All(coord => _coordPolyominosDictionary[coord].Count <= 1);
             }
         }
 
@@ -154,7 +158,8 @@ namespace GameBase
         private void GenerateGrid(int i, int j)
         {
             var grid = Instantiate(gridTemplate, gridsLayout.transform).GetComponent<Grid>();
-            grid.data = new GridData(i, j);
+            grid.Init(new GridData(i, j));
+            grid.onGridClicked.AddListener(OnGridClicked);
             grids.Add(grid);
         }
         
@@ -166,10 +171,13 @@ namespace GameBase
         }
 
 
-        private void OnGridClicked(GridData data)
+        #region Event Handler
+
+        private void OnGridClicked(Coord coord)
         {
-            onGridClickedEvent.Invoke(data);
+            DebugPG13.Log("coord", coord);
         }
-        
+
+        #endregion
     }
 }

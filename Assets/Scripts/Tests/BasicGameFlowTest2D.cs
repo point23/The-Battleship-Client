@@ -40,16 +40,10 @@ namespace Tests
         private async UniTask<Board> GenerateBoard()
         {
             var board = Instantiate(boardTemplate, boardsTrans).GetComponent<Board>();
-            board.onGridClickedEvent.AddListener(OnGridClicked);
             board.GenerateGrids(boardRows, boardCols);
             await UniTask.DelayFrame(1);
             
             return board;
-        }
-
-        private void OnGridClicked(GridData data)
-        {
-            Debug.Log("[BasicGameFlowTest2D] on grid clicked" + data.ToJson());
         }
     }
 }

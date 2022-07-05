@@ -88,6 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90a5e158c386fc74490ca3d08a11933c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInteractable: 1
   gridTemplate: {fileID: 4321285433120922893, guid: 028972d0c39c7f54f9ef6176dc79868a, type: 3}
   polyominoesHandlerTemplate: {fileID: 4975971303598336750, guid: 639cfb8e9d254fd4788eb157910c5743, type: 3}
   gridsLayout: {fileID: 2374668572176156476}
