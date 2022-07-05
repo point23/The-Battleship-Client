@@ -13,7 +13,6 @@ namespace Utilities
         public List<DragDropItem> dragDropItems = new List<DragDropItem>();
         private CanvasGroup _canvasGroup;
         private Diastimeter _diastimeter;
-        // todo: refactor -> extract group-child items 
         private MultiClickItemGroup _multiClickItemGroup;
 
         public void Start()
@@ -50,7 +49,8 @@ namespace Utilities
         }
         
         private void OnBeginDrag(DragDropItem chosenOne)
-        {
+        { 
+            _canvasGroup.blocksRaycasts = false;
             RenderBeginDrag();
             SetAllItemsExcept(chosenOne, false);
             _multiClickItemGroup.SetAllItems(false);
@@ -58,6 +58,7 @@ namespace Utilities
 
         private void OnEndDrag(DragDropItem chosenOne)
         {
+            _canvasGroup.blocksRaycasts = true;
             RenderEndDrag();
             SetAllItems(true);
             _multiClickItemGroup.SetAllItems(true);

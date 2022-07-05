@@ -14,15 +14,14 @@ namespace DataTypes
         public Coord topLeft;
         public BoundingBox bounds;
         public int angle;
+        public List<Coord> gridCoords;
 
-        public List<Coord> grids;
-
-        public PolyominoData(Coord topLeft, BoundingBox bounds, int angle, List<Coord> grids)
+        public PolyominoData(Coord topLeft, BoundingBox bounds, int angle, List<Coord> gridCoords)
         {
             this.topLeft = topLeft;
             this.bounds = bounds;
             this.angle = angle;
-            this.grids = grids;
+            this.gridCoords = gridCoords;
         }
         
         public void RotateClockwiseAround(Vector2 centerPoint)

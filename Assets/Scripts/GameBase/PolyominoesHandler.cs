@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DataTypes;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using Utilities;
 
 namespace GameBase
@@ -11,32 +13,28 @@ namespace GameBase
     {
         public Board board;
         public GameObject polyominoTemplate;
-        public Transform layout;
+        public List<Polyomino> polyominos;
+        [HideInInspector] public UnityEvent<Polyomino> onPolyominoRelocatedEvent;
+        private Transform Layout => board.polyominosLayout;
 
-        public void Init(Board board)
+        public void Init(Board newBoard)
         {
-            this.board = board;
-            layout = board.chessLayout;
+            board = newBoard;
         }
-        
+
         public void GeneratePolyominoes(List<PolyominoData> dataList)
         {
             foreach (var data in dataList)
             {
-                GeneratePolyomino(data);
+                polyominos.Add(GeneratePolyomino(data));
             }
         }
 
-        public void GeneratePolyomino(PolyominoData data)
-        {
-            var polyomino = Instantiate(polyominoTemplate, layout).GetComponent<Polyomino>();
-            polyomino.Init(this, data);
-        }
-        
-        public void SetPolyominoPosition(Polyomino polyomino)
+        public void RelocatePolyomino(Polyomino polyomino)
         {
             var topLeftPos = board.LocalPositionOfCoord(polyomino.TopLeft);
             var bottomRightPos = board.LocalPositionOfCoord(polyomino.BottomRight);
+            polyomino.transform.localPosition = (1 / 2f) * (topLeftPos + bottomRightPos);
             // DebugPG13.Log(new Dictionary<object, object>()
             // {
             //     {"top left coord", polyomino.TopLeft.ToJson()},
@@ -45,22 +43,27 @@ namespace GameBase
             //     {"top left pos", topLeftPos},
             //     {"bottom right pos", bottomRightPos}
             // });
-            polyomino.transform.localPosition = (1 / 2f) * (topLeftPos + bottomRightPos);
+        }
+
+        public void OnPolyominoRelocated(Polyomino polyomino)
+        {
+            RelocatePolyomino(polyomino);
+            onPolyominoRelocatedEvent.Invoke(polyomino);
+            RenderPolyominos();
+        }
+
+        private void RenderPolyominos()
+        {
+            polyominos.ForEach(p => p.RenderGrids());
         }
 
         public bool AnyGridsInBoundsAfterMove(Polyomino polyomino, Vector2Int delta)
         {
-            foreach (var coord in polyomino.GridsCoordList)
+            foreach (var coord in polyomino.GridCoordsInWorldSpace)
             {
-                var coordInWorldSpace = polyomino.FromLocalToWorldCoord(coord);
-                coordInWorldSpace += delta;
-                // DebugPG13.Log(new Dictionary<object, object>()
-                // {
-                //     {"coord before", (coordInWorldSpace - delta).ToJson()},
-                //     {"coord after", coordInWorldSpace.ToJson()},
-                //     {"is in bounds", IsGridInBounds(coordInWorldSpace)}
-                // });
-                if (IsGridInBounds(coordInWorldSpace))
+                var temp = new Coord(coord);
+                temp += delta;
+                if (IsCoordInBounds(temp))
                     return true;
             }
 
@@ -69,20 +72,20 @@ namespace GameBase
 
         public bool AllGridsInBounds(Polyomino polyomino)
         {
-            foreach (var coord in polyomino.GridsCoordList)
-            {
-                var coordInWorldSpace = polyomino.FromLocalToWorldCoord(coord);
-                if (!IsGridInBounds(coordInWorldSpace))
-                {
-                    return false;
-                }
-            }
-            return true;
+            return polyomino.GridCoordsInWorldSpace.All(IsCoordInBounds);
         }
 
-        private bool IsGridInBounds(Coord coord)
+        private bool IsCoordInBounds(Coord coord)
         {
             return board.BoundingBox.IsCoordIn(coord);
+        }
+        
+        private Polyomino GeneratePolyomino(PolyominoData data)
+        {
+            var polyomino = Instantiate(polyominoTemplate, Layout).GetComponent<Polyomino>();
+            polyomino.relocatedEvent.AddListener(OnPolyominoRelocated);
+            polyomino.Init(this, data);
+            return polyomino;
         }
     }
    

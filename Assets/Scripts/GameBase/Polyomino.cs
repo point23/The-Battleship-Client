@@ -2,6 +2,7 @@
 using System.Linq;
 using DataTypes;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Utilities;
 using Quaternion = UnityEngine.Quaternion;
@@ -16,24 +17,32 @@ namespace GameBase
         public GameObject polyominoGridTemplate;
         [HideInInspector] public PolyominoData data;
         [HideInInspector] public PolyominoesHandler handler;
+        [HideInInspector] public UnityEvent<Polyomino> relocatedEvent;
 
         #region Properties
 
-        private BoundingBox Bounds => data.bounds;
-        private int Angle => data.angle;
         public Coord TopLeft
         {
             get => data.topLeft;
             private set => data.topLeft = value;
         }
+        public bool IsGridsValid
+        {
+            get => GridList.All(grid => grid.IsValid);
+            set => GridList.ForEach(grid => grid.IsValid = value);
+        }
         public Coord BottomRight => TopLeft + DiagonalVector;
-        public Vector2 DiagonalVector => RotateVectorClockwise(Bounds.ToDiagonalVector(), Angle);
-        public List<Coord> GridsCoordList => data.grids;
+        public List<Coord> GridCoordsInWorldSpace => GridCoords.Select(FromLocalToWorldCoord).ToList();
+        private BoundingBox Bounds => data.bounds;
+        private int Angle => data.angle;
+        private List<Coord> GridCoords => data.gridCoords;
+        private Vector2 DiagonalVector => RotateVectorClockwise(Bounds.ToDiagonalVector(), Angle);
         private int GridsCount => Bounds.height * Bounds.width;
         private List<Grid> GridList => layoutGroup.GetComponentsInChildren<Grid>().ToList();
         private DragDropItemGroup DragDropItemGroup => GetComponent<DragDropItemGroup>();
         private MultiClickItemGroup MultiClickItemGroup => GetComponent<MultiClickItemGroup>();
         private bool AllGridsInBounds => handler.AllGridsInBounds(this);
+        private IEnumerable<int> OccupiedGridsIndex => from gridCoord in GridCoords select Bounds.ConvertCoordToIndex(gridCoord);
 
         #endregion
         
@@ -49,13 +58,20 @@ namespace GameBase
             this.data = data;
             Render();
         }
+        
+        public void RenderGrids()
+        {
+            GridList.ForEach(grid => grid.Render());
+        }
 
         private void Render()
         {
-            SetPosition();
             SetLayoutGroup();
             InstantiateGridObjects();
             InitGrids();
+            
+            OnRelocated();
+            CheckGridsValidity();
             RenderGrids();
             InitDragDropGroup();
             InitMultiClickItemGroup();
@@ -71,17 +87,9 @@ namespace GameBase
             DragDropItemGroup.Init(new Diastimeter(handler.board), MultiClickItemGroup);
         }
 
-        private void RenderRotation()
+        private void OnRelocated()
         {
-            SetLayoutGroup();
-            SetPosition();
-            // InitGrids();
-            RenderGrids();
-        }
-
-        private void SetPosition()
-        {
-            handler.SetPolyominoPosition(this);
+            relocatedEvent.Invoke(this);
         }
 
         private void SetLayoutGroup()
@@ -99,19 +107,16 @@ namespace GameBase
 
         private void InitGrids()
         {
-            var occupiedGrids = GridsCoordList.Select(gridCoord => gridCoord.ToIndex(Bounds.width)).ToList();
             for (var row = 0; row < Bounds.height; row++)
             {
                 for (var col = 0; col < Bounds.width; col++)
                 {
                     var coord = new Coord(row, col);
-                    var gridIndex = coord.ToIndex(Bounds.width);
-                    var isOccupied = occupiedGrids.Contains(gridIndex);
-
-                    GridList[gridIndex].Init(new GridData(coord, isOccupied));
-
-                    GridList[gridIndex].GetComponent<DragDropItem>().isActive = isOccupied;
-                    GridList[gridIndex].GetComponent<MultiClickItem>().isActive = isOccupied;
+                    var index = Bounds.ConvertCoordToIndex(coord);
+                    var isOccupied = OccupiedGridsIndex.Contains(index);
+                    GridList[index].Init(new GridData(coord, isOccupied));
+                    GridList[index].GetComponent<DragDropItem>().isActive = isOccupied;
+                    GridList[index].GetComponent<MultiClickItem>().isActive = isOccupied;
                     // DebugPG13.Log(new Dictionary<object, object>()
                     // {
                     //     {"grid coord", coord.ToJson()},
@@ -140,21 +145,12 @@ namespace GameBase
             return true;
         }
 
-        private void RenderGrids()
-        {
-            foreach (var grid in GridList)
-            {
-                grid.Render();
-            }
-        }
-
         private void CheckGridsValidity()
         {
-            foreach (var grid in GridList)
-                grid.IsValid = AllGridsInBounds;
+            IsGridsValid = IsGridsValid && AllGridsInBounds;
         }
 
-        public Coord FromLocalToWorldCoord(Coord localCoord)
+        private Coord FromLocalToWorldCoord(Coord localCoord)
         {
             var coord = new Coord(TopLeft);
             var delta = RotateVectorClockwise(localCoord.ToVector2(), Angle);
@@ -177,12 +173,12 @@ namespace GameBase
 
         private void OnDragged(Vector2Int delta)
         {
-            if (TryMove(delta))
-            {
-                CheckGridsValidity();
-                RenderGrids();
-            }
-            SetPosition();
+            if (!TryMove(delta)) 
+                return;
+            
+            OnRelocated();
+            CheckGridsValidity();
+            RenderGrids();
         }
 
         private void OnRotated(MultiClickItem item)
@@ -201,12 +197,17 @@ namespace GameBase
             //     {"center after", FromLocalToWorldCoord(item.GetComponent<Grid>().Coord).ToVector2()},
             //     {"topLeft after", TopLeft.ToJson()}
             // });
+            OnRelocated();
             CheckGridsValidity();
-            RenderRotation();
+            RenderGrids();
             // DebugPG13.Log("Ship Data", data.ToJson());
         }
         
         #endregion
-
+        
+        public string ToJson()
+        {
+            return data.ToJson();
+        }
     }
 }

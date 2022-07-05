@@ -1,4 +1,5 @@
 ﻿using System;
+using GameBase;
 using UnityEngine;
 
 namespace DataTypes
@@ -71,9 +72,9 @@ namespace DataTypes
             return new Vector2Int(x, y);
         }
 
-        public int ToIndex(int cols)
+        public override string ToString()
         {
-            return x * cols + y;
+            return ToJson();
         }
 
         public string ToJson()
@@ -104,6 +105,19 @@ namespace DataTypes
         {
             return new Coord(coord.x +  Convert.ToInt32(delta.x), coord.y + Convert.ToInt32(delta.y));
         }
+        
+        public static bool operator ==(Coord a, Coord b)
+        {
+            if (a == null || b == null)
+                return false;
+            
+            return a.Row == b.Row && a.Col == b.Col;
+        }
+        
+        public static bool operator !=(Coord a, Coord b)
+        {
+            return !(a == b);
+        }
 
         public Vector2 CalculateDelta(Coord other)
         {
@@ -114,6 +128,22 @@ namespace DataTypes
         {
             return new Vector2Int(x - other.x, y - other.y);        
         }
+        
+        protected bool Equals(Coord other)
+        {
+            return x == other.x && y == other.y;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals((Coord) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(x, y);
+        }
+
 
         #endregion
 

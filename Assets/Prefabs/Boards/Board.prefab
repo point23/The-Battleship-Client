@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4199221343527683131}
   m_Layer: 0
-  m_Name: ' ChessLayout'
+  m_Name: ' Polyominos Layout'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -89,14 +89,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridTemplate: {fileID: 4321285433120922893, guid: 028972d0c39c7f54f9ef6176dc79868a, type: 3}
+  polyominoesHandlerTemplate: {fileID: 4975971303598336750, guid: 639cfb8e9d254fd4788eb157910c5743, type: 3}
   gridsLayout: {fileID: 2374668572176156476}
-  chessLayout: {fileID: 4199221343527683131}
+  polyominosLayout: {fileID: 4199221343527683131}
   rows: 9
   cols: 9
   grids: []
   onGridClickedEvent:
     m_PersistentCalls:
       m_Calls: []
+  polyominoesHandler: {fileID: 0}
 --- !u!65 &8931038695054665716
 BoxCollider:
   m_ObjectHideFlags: 0

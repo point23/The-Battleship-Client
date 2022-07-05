@@ -15,7 +15,6 @@ namespace Tests
         public Button btnStart;
         public Transform boardsTrans;
         public GameObject boardTemplate;
-        public PolyominoesHandler polyominoesHandler;
         public int boardRows;
         public int boardCols;
         
@@ -35,9 +34,7 @@ namespace Tests
         private void GenerateShips(Board board)
         {
             var shipsDataList = FileHandler.ReadListFromJSON<PolyominoData>(AppManager.TestShipsJsonDataPath);
-            polyominoesHandler.Init(board);
-            
-            polyominoesHandler.GeneratePolyominoes(shipsDataList);
+            board.polyominoesHandler.GeneratePolyominoes(shipsDataList);
         }
 
         private async UniTask<Board> GenerateBoard()

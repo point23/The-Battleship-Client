@@ -13,7 +13,6 @@ namespace Tests
     // user's ships by it and put them in random positions that is available
     public class RandomShipsGenerationTest : MonoBehaviour
     {
-        public PolyominoesHandler polyominoesHandler;
         public Transform boardsTrans;
         public GameObject boardTemplate;
         public Button btnWriteShipData;
@@ -39,10 +38,8 @@ namespace Tests
         private async void GenerateShips()
         {
             var board = await GenerateBoard();
-            polyominoesHandler.Init(board);
-
             var shipsDataList = FileHandler.ReadListFromJSON<PolyominoData>(AppManager.TestShipsJsonDataPath);
-            polyominoesHandler.GeneratePolyominoes(shipsDataList);
+            board.polyominoesHandler.GeneratePolyominoes(shipsDataList);
             btnGenerate.gameObject.SetActive(false);
             btnWriteShipData.gameObject.SetActive(false);
         }

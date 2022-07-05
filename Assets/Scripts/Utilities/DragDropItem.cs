@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -6,7 +7,7 @@ using UnityEngine.EventSystems;
 namespace Utilities
 {
     [Serializable]
-    public class DragDropItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
+    public class DragDropItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerDownHandler
     {
         public bool isActive;
         public bool isEnabled;
@@ -36,14 +37,18 @@ namespace Utilities
             _diastimeter = new Diastimeter(diastimeter);
         }
         
-        public void OnBeginDrag(PointerEventData eventData)
+        public void OnPointerDown(PointerEventData eventData)
         {
             if (!isActive || !IsEnabled)
                 return;
             _diastimeter.Begin(eventData.position);
+        }
+        
+        public void OnBeginDrag(PointerEventData eventData)
+        {
             onBeginDragEvent.Invoke(this);
         }
-
+  
         public void OnEndDrag(PointerEventData eventData)
         {
             if (!isActive || !IsEnabled)
@@ -57,7 +62,7 @@ namespace Utilities
             if (!isActive || !IsEnabled)
                 return;
             
-            var delta = _diastimeter.CalculateDelta(eventData.position); 
+            var delta = _diastimeter.CalculateDelta(eventData.position);
             if (!_diastimeter.IsAvailable || delta.sqrMagnitude <= 0)
                 return;
             onDraggedEvent.Invoke(delta);

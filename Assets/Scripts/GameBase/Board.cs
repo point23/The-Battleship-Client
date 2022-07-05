@@ -1,22 +1,29 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataTypes;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using Utilities;
 
 namespace GameBase
 {
     public class Board : MonoBehaviour
     {
         public GameObject gridTemplate;
+        public GameObject polyominoesHandlerTemplate;
         public GridLayoutGroup gridsLayout;
-        public Transform chessLayout;
+        public Transform polyominosLayout;
         public int rows = 9;
         public int cols = 9;
         public List<Grid> grids;
+        public UnityEvent<GridData> onGridClickedEvent;
+        private Dictionary<Coord, List<Polyomino>> _coordPolyominosDictionary;
+        [HideInInspector] public PolyominoesHandler polyominoesHandler;
+
+        #region Properties
+        
+        private List<Polyomino> Polyominos => polyominoesHandler.polyominos;
         public Bounds Bounds => GetComponent<BoxCollider>().bounds;
         public BoundingBox BoundingBox => new BoundingBox(cols, rows);
         private Vector2 CellSize
@@ -24,8 +31,7 @@ namespace GameBase
             get => gridsLayout.cellSize;
             set => gridsLayout.cellSize = value;
         }
-        public UnityEvent<GridData> onGridClickedEvent;
-        
+
         //  *________
         // |__|__|__|
         // |__|__|__|
@@ -36,18 +42,21 @@ namespace GameBase
         private float Width => CellSize.x * cols;
         private Vector3 Size => new Vector3(Height, Width);
 
+        #endregion
+        
         public void Awake()
         {
             CellSize = AppManager.instance.cellSize;
             grids = new List<Grid>();
             Collider.size = Size;
+            _coordPolyominosDictionary = new Dictionary<Coord, List<Polyomino>>();
+            GeneratePolyominoesHandler();
         }
-
-        public void GenerateGrids(int rows, int cols)
+        
+        public void GenerateGrids(int newRows=default, int newCols=default)
         {
-            this.rows = rows;
-            this.cols = cols;
-            
+            rows = newRows == default ? rows : newRows;
+            cols = newCols == default ? cols : newCols;
             for (var i = 0; i < rows; i++)
             {
                 for (var j = 0; j < cols; j++)
@@ -59,9 +68,9 @@ namespace GameBase
 
         public Vector3 LocalPositionOfCoord(Coord coord)
         {
-            if (BoundingBox.IsCoordIn(coord))
+            if (IsCoordIn(coord))
             {
-                var index = coord.ToIndex(cols);
+                var index = ConvertCoordToIndex(coord);
                 return grids[index].transform.localPosition;
             }
             
@@ -74,9 +83,9 @@ namespace GameBase
         public Coord CoordOfPosition(Vector3 position)
         {
             var localPosition = transform.InverseTransformPoint(position);
-            var deltaX = localPosition.x - grids[0].LocalPosition.x + (CellSize.x / 2);
-            var deltaY = grids[0].LocalPosition.y - localPosition.y + (CellSize.y / 2);
-            var coord = new Coord( (int) (deltaY / CellSize.y), (int) (deltaX / CellSize.x));
+            var deltaX = localPosition.x - grids[0].LocalPosition.x;
+            var deltaY = grids[0].LocalPosition.y - localPosition.y;
+            var coord = new Coord(  Convert.ToInt32(deltaY / CellSize.y),  Convert.ToInt32(deltaX / CellSize.x));
             // DebugPG13.Log(new Dictionary<object, object>()
             // {
             //     {"deltaX", deltaX},
@@ -86,18 +95,81 @@ namespace GameBase
             return coord;
         }
         
+        public void OnPolyominoRelocated(Polyomino polyomino)
+        {
+            RemovePolyominoFromCoordPolyominosDict(polyomino);
+            AddPolyominoToCoordPolyominosDict(polyomino);
+            CheckValidity();
+        }
+
+        private bool IsCoordIn(Coord coord)
+        {
+            return BoundingBox.IsCoordIn(coord);
+        }
+        
+        private void CheckValidity()
+        {
+            foreach (var polyomino in Polyominos)
+            {
+                polyomino.IsGridsValid = true;
+                foreach (var coord in polyomino.GridCoordsInWorldSpace)
+                {
+                    if (_coordPolyominosDictionary[coord].Count <= 1) continue;
+                    
+                    polyomino.IsGridsValid = false;
+                    break;
+                }
+            }
+        }
+
+        private void AddPolyominoToCoordPolyominosDict(Polyomino polyomino)
+        {
+            foreach (var coord in polyomino.GridCoordsInWorldSpace)
+            {
+                if (_coordPolyominosDictionary.ContainsKey(coord))
+                {
+                    _coordPolyominosDictionary[coord].Add(polyomino);
+                }
+                else
+                {
+                    _coordPolyominosDictionary[coord] = new List<Polyomino> { polyomino };
+                }
+            }
+        }
+
+        private int ConvertCoordToIndex(Coord coord)
+        {
+            return BoundingBox.ConvertCoordToIndex(coord);
+        }
+
+        private void RemovePolyominoFromCoordPolyominosDict(Polyomino polyomino)
+        {
+            foreach (var coord in _coordPolyominosDictionary.Keys)
+            {
+                var polyominos = _coordPolyominosDictionary[coord];
+                polyominos.Remove(polyomino);
+            }
+        }
+
         private void GenerateGrid(int i, int j)
         {
             var grid = Instantiate(gridTemplate, gridsLayout.transform).GetComponent<Grid>();
             grid.data = new GridData(i, j);
             grids.Add(grid);
-            grid.gridClickedEvent.AddListener(OnGridClicked);
         }
         
+        private void GeneratePolyominoesHandler()
+        {
+            polyominoesHandler = Instantiate(polyominoesHandlerTemplate).GetComponent<PolyominoesHandler>();
+            polyominoesHandler.Init(this);
+            polyominoesHandler.onPolyominoRelocatedEvent.AddListener(OnPolyominoRelocated);
+        }
+
+
         private void OnGridClicked(GridData data)
         {
             onGridClickedEvent.Invoke(data);
         }
-
+        
     }
 }

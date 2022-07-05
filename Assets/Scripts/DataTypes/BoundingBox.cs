@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
+using Utilities;
 
 namespace DataTypes
 {
@@ -32,7 +36,7 @@ namespace DataTypes
 
         public bool IsCoordIn(Coord coord)
         {
-            return  coord.x >= 0 && coord.y >= 0 && coord.x < width && coord.y < height;
+            return  coord.x >= 0 && coord.y >= 0 && coord.x < height && coord.y < width;
         }
 
         #region Convertors
@@ -52,7 +56,20 @@ namespace DataTypes
             return JsonUtility.ToJson(this);
         }
 
-        #endregion
+        public int ConvertCoordToIndex(Coord coord)
+        {
+            if (IsCoordIn(coord)) 
+                return coord.x * width + coord.y;
+            
+            DebugPG13.LogError(new Dictionary<object, object>()
+            {
+                {"error", "invalid coord"},
+                {"coord", coord.ToJson()},
+                {"bounding box", this.ToJson()},
+            });
+            return -1;
+        }
 
+        #endregion
     }
 }

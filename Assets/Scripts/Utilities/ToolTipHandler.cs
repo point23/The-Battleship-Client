@@ -12,6 +12,7 @@ namespace Utilities
         public static ToolTipHandler instance;
         public StringGameObjectDictionary toolTips;
         public Transform tipsLayout;
+        public bool shouldGenerating;
         private bool _isGenerating;
         
         public void Awake()
@@ -30,7 +31,7 @@ namespace Utilities
 
         public async void Generate(string name, Vector3 pos)
         {
-            if (!toolTips.ContainsKey(name)) return;
+            if (!shouldGenerating || !toolTips.ContainsKey(name)) return;
             
             var tip = toolTips[name];
             var go = Instantiate(tip, tipsLayout);
@@ -41,7 +42,7 @@ namespace Utilities
         
         public async void Generate(string name, Transform trans)
         {
-            if (!toolTips.ContainsKey(name) || _isGenerating) return;
+            if (!shouldGenerating || !toolTips.ContainsKey(name) || _isGenerating) return;
 
             _isGenerating = true;
             var tip = toolTips[name];

@@ -1,17 +1,18 @@
 using DataTypes;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Utilities;
 
 namespace GameBase
 {
     public class Grid : MonoBehaviour
     {
         public GridData data;
-        [HideInInspector] public UnityEvent<GridData> gridClickedEvent;
-
+        
         #region Properties
-
+        
         public Coord Coord => data.coord;
         public bool IsOccupied => data.isOccupied;
         public bool IsValid
@@ -22,15 +23,9 @@ namespace GameBase
         public Vector3 Position => transform.position;
         public Vector3 LocalPosition => transform.localPosition;
         private Image GridImage => GetComponentInChildren<Image>();
-        private Button BtnGrid => GetComponentInChildren<Button>();
 
         #endregion
-
-        public void Start()
-        {
-            BtnGrid.onClick.AddListener(OnClicked);
-        }
-
+        
         public void Init(GridData gridData)
         {
             data = gridData;
@@ -55,11 +50,6 @@ namespace GameBase
         public string ToJson()
         {
             return data.ToJson();
-        }
-
-        private void OnClicked()
-        {
-            gridClickedEvent.Invoke(data);
         }
     }
 }
