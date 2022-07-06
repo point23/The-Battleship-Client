@@ -14,7 +14,7 @@ namespace GameBase
         #region Properties
         
         public Coord Coord => data.coord;
-        public bool IsOccupied => data.isOccupied;
+        public bool IsActive => data.isActive;
         public bool IsValid
         {
             get => data.isValid;
@@ -46,7 +46,7 @@ namespace GameBase
 
         public void Render()
         {
-            if (!IsOccupied)
+            if (!IsActive)
             {
                 GridImage.color = new Color();
             }
@@ -73,5 +73,10 @@ namespace GameBase
         }
 
         #endregion
+    }
+
+    public class NullGrid : Grid
+    {
+        
     }
 }

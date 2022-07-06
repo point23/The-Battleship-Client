@@ -7,13 +7,13 @@ namespace DataTypes
     public class GridData
     {
         public Coord coord;
-        public bool isOccupied;
+        public bool isActive;
         public bool isValid;
 
-        public GridData(Coord coord, bool isOccupied = false, bool isValid = true)
+        public GridData(Coord coord, bool isActive = false, bool isValid = true)
         {
             this.coord = coord;
-            this.isOccupied = isOccupied;
+            this.isActive = isActive;
             this.isValid = isValid;
         }
         

@@ -96,8 +96,8 @@ namespace GameBase
             // });
             return coord;
         }
-        
-        public void OnPolyominoRelocated(Polyomino polyomino)
+
+        private void OnPolyominoRelocated(Polyomino polyomino)
         {
             RemovePolyominoFromCoordPolyominosDict(polyomino);
             AddPolyominoToCoordPolyominosDict(polyomino);

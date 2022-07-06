@@ -113,10 +113,10 @@ namespace GameBase
                 {
                     var coord = new Coord(row, col);
                     var index = Bounds.ConvertCoordToIndex(coord);
-                    var isOccupied = OccupiedGridsIndex.Contains(index);
-                    GridList[index].Init(new GridData(coord, isOccupied));
-                    GridList[index].GetComponent<DragDropItem>().IsActive = isOccupied;
-                    GridList[index].GetComponent<MultiClickItem>().IsActive = isOccupied;
+                    var isActive = OccupiedGridsIndex.Contains(index);
+                    GridList[index].Init(new GridData(coord, isActive));
+                    GridList[index].GetComponent<DragDropItem>().IsActive = isActive;
+                    GridList[index].GetComponent<MultiClickItem>().IsActive = isActive;
                     // DebugPG13.Log(new Dictionary<object, object>()
                     // {
                     //     {"grid coord", coord.ToJson()},
