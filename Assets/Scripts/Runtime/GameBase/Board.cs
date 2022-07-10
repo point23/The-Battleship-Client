@@ -165,12 +165,11 @@ namespace Runtime.GameBase
         
         private void GeneratePolyominoesHandler()
         {
-            polyominoesHandler = Instantiate(polyominoesHandlerTemplate).GetComponent<PolyominoesHandler>();
+            polyominoesHandler = Instantiate(polyominoesHandlerTemplate, transform).GetComponent<PolyominoesHandler>();
             polyominoesHandler.Init(this);
             polyominoesHandler.onPolyominoRelocatedEvent.AddListener(OnPolyominoRelocated);
         }
-
-
+        
         #region Event Handler
 
         private void OnGridClicked(Coord coord)
