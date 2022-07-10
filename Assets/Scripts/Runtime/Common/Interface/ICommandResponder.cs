@@ -1,10 +1,10 @@
 ﻿using Cysharp.Threading.Tasks;
 using Runtime.Infrastructures.JSON;
 
-namespace Runtime.Common
+namespace Runtime.Common.Interface
 {
     public interface ICommandResponder
     {
-        public UniTask Run(JsonData data);
+        public UniTask Run(string action, JsonData data);
     }
 }

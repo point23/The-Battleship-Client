@@ -37,6 +37,7 @@ namespace Test
         private async UniTask<Board> GenerateBoard()
         {
             var board = Instantiate(boardTemplate, boardsTrans).GetComponent<Board>();
+            board.Init(new Vector2(100, 100));
             board.GenerateGrids(boardRows, boardCols);
             await UniTask.DelayFrame(1);
             

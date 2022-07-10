@@ -1,40 +1,57 @@
 ﻿using System.Collections.Generic;
+using Runtime.Common.Interface;
+using Runtime.Infrastructures.Helper;
 using Runtime.Infrastructures.JSON;
-using UnityEngine;
 
 namespace Runtime.Common
 {
-    public class CommandHub : MonoBehaviour
+    public class CommandHub
     {
-        public Dictionary<string, ICommandResponder> responders;
+        private readonly Dictionary<string, ICommandResponder> _responders;
 
-        public void Awake()
+        public CommandHub()
         {
-            responders = new Dictionary<string, ICommandResponder>();
+            _responders = new Dictionary<string, ICommandResponder>();
         }
 
         public void Register(string name, ICommandResponder responder)
         {
-            responders[name] = responder;
+            _responders[name] = responder;
         }
         
-        public void RunCommands(List<Command> commandList)
+        public async void RunCommands(List<Command> commandList)
         {
             foreach (var command in commandList)
             {
                 RunCommand(command);
             }
         }
-        
-        public void RunCommand(Command command)
+
+        private async void RunCommand(Command command)
         {
-            responders[command.responder].Run(command.data);
+            DebugPG13.Log(new Dictionary<object, object>
+            {
+                {"responder", command.responder},
+                {"action", command.action},
+                {"data", command.Data}
+            });
+            
+            await _responders[command.responder].Run(command.action, command.Data);
         }
     }
 
-    public struct Command
+    public readonly struct Command
     {
-        public string responder;
-        public JsonData data;
+        public readonly string responder;
+        public readonly string action;
+        private readonly string _data;
+        public JsonData Data => new(_data);
+        
+        public Command(JsonData jsonData)
+        {
+            responder = jsonData["responder"].Value;
+            action = jsonData["action"].Value;
+            _data = jsonData["data"].Value;
+        }
     }
 }

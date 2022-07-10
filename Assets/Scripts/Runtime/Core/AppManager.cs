@@ -1,18 +1,21 @@
 ﻿using Proyecto26;
 using Runtime.Common;
+using Runtime.Common.Abstract;
+using Runtime.Common.Responders;
 using Runtime.Infrastructures.Helper;
+using Runtime.Infrastructures.JSON;
 using UnityEditor;
 using UnityEngine;
 
 namespace Runtime.Core
 {
-    public class AppManager : MonoBehaviour
+    public class AppManager : AbstractManager
     {
         public static AppManager instance;
-        public Vector2 cellSize = new Vector2(100, 100);
         public string uriRootLocal = "http://localhost:8080/";
+        public DialogBuilder dialogBuilder;
         private AppSyncService _syncService;
-        
+
         public void Awake()
         {
             if (instance != null && instance != this)
@@ -24,16 +27,38 @@ namespace Runtime.Core
                 instance = this;
             }
 
-            RestClient.DefaultRequestParams["deviceId"] = SystemInfo.deviceUniqueIdentifier;
-            DebugPG13.Log("default params", RestClient.DefaultRequestParams["deviceId"]);
-            _syncService = new AppSyncService();
-            _syncService.CreateSession(uriRootLocal + "sessions");
-
+            Init();
+        }
+        
+        protected override void PostInit()
+        {
+            SetDefaultDeviceId();
+            
+            InitCommandHub();
+            
+            InitAppSyncService();
         }
 
-        #region Data Paths
-        
-        #endregion
+        private void InitCommandHub()
+        {
+            commandHub.Register("DataSource", dataSource);
+            commandHub.Register("DialogBuilder", dialogBuilder);
+        }
+
+        private void InitAppSyncService()
+        {
+            _syncService = new AppSyncService();
+            
+            _syncService.onInit.AddListener(commandHub.RunCommands);
+            _syncService.onLogin.AddListener(commandHub.RunCommands);
+            
+            _syncService.InitService(uriRootLocal);
+        }
+
+        private void SetDefaultDeviceId()
+        {
+            RestClient.DefaultRequestParams["deviceId"] = SystemInfo.deviceUniqueIdentifier;
+        }
 
     }
 }
