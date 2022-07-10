@@ -29,7 +29,12 @@ namespace Runtime.Core
 
             Init();
         }
-        
+
+        public void Login()
+        {
+            _syncService.LoginService(dataSource.linksDictionary["login"]);
+        }
+
         protected override void PostInit()
         {
             SetDefaultDeviceId();

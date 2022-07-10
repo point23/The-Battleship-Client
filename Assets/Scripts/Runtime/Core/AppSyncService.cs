@@ -29,6 +29,7 @@ namespace Runtime.Core
             var request = new RequestHelper {Uri = uri};
             PostRequest(request, response =>
             {
+                EditorUtility.DisplayDialog("response", response.Text, "Ok");
                 onLogin.Invoke(new JsonDataList(response.Text).ToCommands());
                 return UniTask.CompletedTask;
             });

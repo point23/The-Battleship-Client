@@ -36,7 +36,7 @@ namespace Runtime.Common.Responders
 
         public UniTask Run(string action, JsonData data)
         {
-            Debug.Log(data); 
+            DebugPG13.Log("new data source", data);
             GetType().GetMethod(action)?.Invoke(this, new object[] { data });
             return UniTask.CompletedTask;
         }
