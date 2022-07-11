@@ -10,7 +10,7 @@ namespace Runtime.Utilities
         [SerializeField] public List<StringGameObjectPair> list;
         [HideInInspector] public Dictionary<string, GameObject> dict = new Dictionary<string, GameObject>();
 
-        public void Start()
+        public void Awake()
         {
             dict.Clear();
             foreach (var pair in list)

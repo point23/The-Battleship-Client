@@ -12,6 +12,7 @@ namespace Runtime.Common.Abstract
         {
             dataSource = new DataSource();
             commandHub = new CommandHub();
+            commandHub.Register("DataSource", dataSource);
             PostInit();
         }
 

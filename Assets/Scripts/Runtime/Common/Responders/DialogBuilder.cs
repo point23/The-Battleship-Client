@@ -1,8 +1,9 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Linq;
+using Cysharp.Threading.Tasks;
 using Runtime.Common.Interface;
 using Runtime.Infrastructures.Helper;
-using Runtime.Infrastructures.JSON;
 using Runtime.Utilities;
+using ThirdParty.SimpleJSON;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,21 +15,30 @@ namespace Runtime.Common.Responders
         public StringGameObjectDictionary instantiatedDialogs;
         public Transform layout;
 
-        public UniTask Run(string action, JsonData data)
+        public UniTask Run(string action, JSONNode data)
         {
-            GetType().GetMethod(action)?.Invoke(this, new object[] { data });
+            switch (action)
+            {
+                case "Render": 
+                    Render(data);
+                    break;
+                case "Dispose": 
+                    Dispose(data);
+                    break;
+            }
             return UniTask.CompletedTask;
         }
 
-        public void RenderNewDialog(JsonData data)
+        private void Render(JSONNode data)
         {
-            if (!dialogsPrefabs.ContainsKey(data["name"].Value)) return;
-            
+            DebugPG13.Log("data", data);
+            if (!dialogsPrefabs.ContainsKey(data["name"].Value)) 
+                return;
             var go = Instantiate(dialogsPrefabs[data["name"].Value], layout);
             instantiatedDialogs[data["id"].Value] = go;
         }
-        
-        public void DisposeExistedDialog(JsonData data)
+
+        private void Dispose(JSONNode data)
         {
             if (!instantiatedDialogs.ContainsKey(data["id"].Value)) return;
             

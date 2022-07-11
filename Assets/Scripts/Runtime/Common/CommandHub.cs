@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Runtime.Common.Interface;
 using Runtime.Infrastructures.Helper;
-using Runtime.Infrastructures.JSON;
+using ThirdParty.SimpleJSON;
 using UnityEngine;
 
 namespace Runtime.Common
@@ -20,7 +21,7 @@ namespace Runtime.Common
             _responders[name] = responder;
         }
         
-        public async void RunCommands(List<Command> commandList)
+        public async void RunCommands(CommandList commandList)
         {
             foreach (var command in commandList)
             {
@@ -34,10 +35,10 @@ namespace Runtime.Common
             {
                 {"responder", command.responder},
                 {"action", command.action},
-                {"data", command.Data}
+                {"data", command.data}
             });
             
-            await _responders[command.responder].Run(command.action, command.Data);
+            await _responders[command.responder].Run(command.action, command.data);
         }
     }
 
@@ -45,14 +46,37 @@ namespace Runtime.Common
     {
         public readonly string responder;
         public readonly string action;
-        private readonly string _data;
-        public JsonData Data => new(_data);
+        public readonly JSONNode data;
         
-        public Command(JsonData jsonData)
+        public Command(JSONNode json)
         {
-            responder = jsonData["responder"].Value;
-            action = jsonData["action"].Value;
-            _data = jsonData["data"].Value;
+            responder = json["responder"].Value;
+            action = json["action"].Value;
+            data = json["data"];
+        }
+    }
+
+    public struct CommandList : IEnumerable<Command>
+    {
+        public List<Command> list;
+
+        public CommandList(JSONArray array)
+        {
+            list = new List<Command>();
+            foreach (var json in array.Children)
+            {
+                list.Add(new Command(json));
+            }
+        }
+
+        public IEnumerator<Command> GetEnumerator()
+        {
+            return list.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

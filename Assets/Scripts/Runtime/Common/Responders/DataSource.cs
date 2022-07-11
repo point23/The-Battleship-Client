@@ -2,23 +2,22 @@
 using Cysharp.Threading.Tasks;
 using Runtime.Common.Interface;
 using Runtime.Infrastructures.Helper;
-using Runtime.Infrastructures.JSON;
-using UnityEngine;
+using ThirdParty.SimpleJSON;
 
 namespace Runtime.Common.Responders
 {
     public class DataSource : ICommandResponder
     {
         public Dictionary<string, string> linksDictionary;
-        public Dictionary<string, JsonData> assetsDictionary;
+        public Dictionary<string, JSONNode> assetsDictionary;
 
         public DataSource()
         {
             linksDictionary = new Dictionary<string, string>();
-            assetsDictionary = new Dictionary<string, JsonData>();
+            assetsDictionary = new Dictionary<string, JSONNode>();
         }
 
-        public void Add(string name, JsonData data)
+        public void Add(string name, JSONNode data)
         {
             assetsDictionary.Add(name, data);
         }
@@ -28,23 +27,31 @@ namespace Runtime.Common.Responders
             return assetsDictionary.ContainsKey(name);
         }
 
-        public (bool, JsonData) TryGetData(string name)
+        public (bool, JSONNode) TryGetData(string name)
         {
             assetsDictionary.TryGetValue(name, out var value);
             return (value != null, value);
         }
 
-        public UniTask Run(string action, JsonData data)
+        public UniTask Run(string action, JSONNode data)
         {
-            DebugPG13.Log("new data source", data);
-            GetType().GetMethod(action)?.Invoke(this, new object[] { data });
+            DebugPG13.Log(new Dictionary<object, object>
+            {
+                {"action", action},
+                {"data", data}
+            });
+            switch (action)
+            {
+                case "RegisterUri": 
+                    RegisterUri(data);
+                    break;
+            }
             return UniTask.CompletedTask;
         }
         
-        private void RegisterBasicUri(JsonData data)
+        private void RegisterUri(JSONNode data)
         {
-            DebugPG13.Log("uri count", data["uris"]);
-           foreach (var source in data["uris"].Children)
+           foreach (var source in data.Children)
            {
                linksDictionary.Add(source["rel"].Value, source["href"].Value);
            }
