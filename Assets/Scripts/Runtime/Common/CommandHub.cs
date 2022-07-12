@@ -21,6 +21,11 @@ namespace Runtime.Common
             _responders[name] = responder;
         }
         
+        public bool ContainsResponder(string name)
+        {
+            return _responders.ContainsKey(name);
+        }
+        
         public async void RunCommands(CommandList commandList)
         {
             foreach (var command in commandList)

@@ -48,6 +48,20 @@ namespace Runtime.GameBase
             set => grids.ForEach(grid => grid.IsInteractable = value);
         }
         #endregion
+        
+        public void Init(BoardData data)
+        { 
+            IsInteractable = data.isInteractable;
+            CellSize = data.cellSize;
+            rows = data.rows;
+            cols = data.cols;
+            // unoccupied grids
+            
+            Collider.size = Size;
+            grids = new List<Grid>();
+            _coordPolyominosDictionary = new Dictionary<Coord, List<Polyomino>>();
+            GeneratePolyominoesHandler();
+        }
 
         public void GenerateGrids(int newRows=default, int newCols=default)
         {
@@ -96,16 +110,6 @@ namespace Runtime.GameBase
             RemovePolyominoFromCoordPolyominosDict(polyomino);
             AddPolyominoToCoordPolyominosDict(polyomino);
             CheckValidity();
-        }
-
-        public void Init(Vector2 cellSize)
-        { 
-            CellSize = cellSize;
-            Collider.size = Size;
-            IsInteractable = true;
-            grids = new List<Grid>();
-            _coordPolyominosDictionary = new Dictionary<Coord, List<Polyomino>>();
-            GeneratePolyominoesHandler();
         }
 
         private bool IsCoordIn(Coord coord)

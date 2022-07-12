@@ -12,7 +12,7 @@ using UnityEngine.Events;
 
 namespace Runtime.Core
 {
-    public class AppSyncService : AbstractSyncService
+    public class AppSyncService : SyncService
     {
         public readonly UnityEvent<CommandList> onInitApp = new UnityEvent<CommandList>();
         public readonly UnityEvent<CommandList> onLogin = new UnityEvent<CommandList>();

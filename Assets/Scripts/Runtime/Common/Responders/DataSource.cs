@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Runtime.Common.Interface;
 using Runtime.Infrastructures.Helper;
 using ThirdParty.SimpleJSON;
+using UnityEngine;
 
 namespace Runtime.Common.Responders
 {
@@ -27,11 +28,21 @@ namespace Runtime.Common.Responders
             return assetsDictionary.ContainsKey(name);
         }
 
-        public (bool, JSONNode) TryGetData(string name)
+        public JSONNode TryGetData(string name)
         {
             assetsDictionary.TryGetValue(name, out var value);
-            return (value != null, value);
+            if (value == null)
+            {
+                // raise error
+            }
+            return value;
         }
+
+        public T TryGetData<T>(string name) where T : new()
+        {
+            var value = TryGetData(name);
+            return JsonUtility.FromJson<T>(value.Value);
+        } 
 
         public UniTask Run(string action, JSONNode data)
         {

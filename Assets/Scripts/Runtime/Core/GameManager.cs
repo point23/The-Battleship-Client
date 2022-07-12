@@ -1,12 +1,20 @@
-﻿using Runtime.Common.Abstract;
+﻿using Cysharp.Threading.Tasks.Triggers;
+using Runtime.Common.Abstract;
+using Runtime.Common.Responders;
+using Runtime.Infrastructures.Helper;
+using ThirdParty.SimpleJSON;
+using UnityEngine;
 
 namespace Runtime.Core
 {
-    public class GameManager : AbstractManager 
+    public class GameManager : CommonManager
     {
         public static GameManager instance;
-        private GameSyncService _syncService;
+
+        public BoardGenerator boardGenerator;
         
+        private GameSyncService _syncService;
+
         public void Awake()
         {
             if (instance != null && instance != this)
@@ -26,6 +34,16 @@ namespace Runtime.Core
             _syncService.EnterGameService(uri);
         }
 
+        public JSONNode TryGetData(string name)
+        {
+            return dataSource.TryGetData(name);
+        }
+        
+        public T TryGetData<T>(string name) where T : new()
+        {
+            return dataSource.TryGetData<T>(name);
+        }
+        
         protected override void PostInit()
         {
             InitCommandHub();
@@ -35,7 +53,8 @@ namespace Runtime.Core
 
         private void InitCommandHub()
         {
-            
+            commandHub.Register("BoardGenerator", boardGenerator);
+            DebugPG13.Log("contains BoardGenerator", commandHub.ContainsResponder("BoardGenerator"));
         }
 
         private void InitGameSyncService()

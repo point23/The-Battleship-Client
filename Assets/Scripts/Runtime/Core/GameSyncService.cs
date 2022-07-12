@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace Runtime.Core
 {
-    public class GameSyncService : AbstractSyncService
+    public class GameSyncService : SyncService
     {
         public readonly UnityEvent<CommandList> onEnterGame = new UnityEvent<CommandList>();
         

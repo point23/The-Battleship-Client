@@ -4,7 +4,7 @@ using Proyecto26;
 
 namespace Runtime.Common.Abstract
 {
-    public abstract class AbstractSyncService
+    public abstract class SyncService
     {
         public void PostRequest(RequestHelper request, Func<ResponseHelper, UniTask> handler)
         {

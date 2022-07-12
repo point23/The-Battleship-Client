@@ -8,15 +8,18 @@ using UnityEngine;
 
 namespace Runtime.Core
 {
-    public class AppManager : AbstractManager
+    public class AppManager : CommonManager
     {
         public static AppManager instance;
+        
+        public Transform gameCameraPos;
+        public Transform uiCameraPos;
         
         public string uriRootLocal = "http://localhost:8080/";
         public string clientVersion = "0.0.1";
         
         public DialogBuilder dialogBuilder;
-        public EntranceRenderer entranceRenderer;
+        public EntranceGenerator entranceGenerator;
 
         private AppSyncService _syncService;
 
@@ -41,11 +44,15 @@ namespace Runtime.Core
 
         public void EnterGame(string uri)
         {
+            SetPosOfMainCamera(gameCameraPos.position);
+            
             GameManager.instance.EnterGame(uri);
         }
 
         protected override void PostInit()
         {
+            SetPosOfMainCamera(uiCameraPos.position);
+            
             SetDefaultDeviceId();
             
             InitCommandHub();
@@ -57,7 +64,7 @@ namespace Runtime.Core
         {
             commandHub.Register("DataSource", dataSource);
             commandHub.Register("DialogBuilder", dialogBuilder);
-            commandHub.Register("EntranceRenderer", entranceRenderer);
+            commandHub.Register("EntranceGenerator", entranceGenerator);
         }
 
         private void InitAppSyncService()
@@ -75,5 +82,9 @@ namespace Runtime.Core
             RestClient.DefaultRequestParams["deviceId"] = SystemInfo.deviceUniqueIdentifier;
         }
 
+        private void SetPosOfMainCamera(Vector3 position)
+        {
+            Camera.main.transform.position = position;
+        }
     }
 }

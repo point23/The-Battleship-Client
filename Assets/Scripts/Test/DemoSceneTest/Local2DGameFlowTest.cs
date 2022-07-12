@@ -4,9 +4,9 @@ using Runtime.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Test
+namespace Test.DemoSceneTest
 {
-    public class TestBasicGameFlow2DLocal : MonoBehaviour
+    public class Local2DGameFlowTest : MonoBehaviour
     {
         private static readonly string TestShipsJsonDataPath = Application.dataPath + "/Scripts/Test/TestData/ships_data.json";
         public Button btnStart;
@@ -37,7 +37,7 @@ namespace Test
         private async UniTask<Board> GenerateBoard()
         {
             var board = Instantiate(boardTemplate, boardsTrans).GetComponent<Board>();
-            board.Init(new Vector2(100, 100));
+            board.Init(BoardData.Default);
             board.GenerateGrids(boardRows, boardCols);
             await UniTask.DelayFrame(1);
             

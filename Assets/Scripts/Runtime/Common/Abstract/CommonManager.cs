@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Runtime.Common.Abstract
 {
-    public abstract class AbstractManager : MonoBehaviour
+    public abstract class CommonManager : MonoBehaviour
     {
         protected DataSource dataSource;
         protected CommandHub commandHub;
