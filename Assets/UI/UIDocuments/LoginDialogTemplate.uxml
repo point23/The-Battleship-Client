@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd">
+    <Style src="project://database/Assets/UI/Style.uss?fileID=7433441132597879392&amp;guid=8d3974ed901ba5442880983347c6908e&amp;type=3#Style" />
+    <ui:VisualElement name="dimBackground" style="background-color: rgba(0, 0, 0, 0.36); height: auto; flex-grow: 1; justify-content: center; align-items: center;">
+        <ui:VisualElement name="loginDialog" style="height: 704px; width: 784px; background-color: rgb(255, 255, 255); border-top-left-radius: 50px; border-bottom-left-radius: 50px; border-top-right-radius: 50px; border-bottom-right-radius: 50px; align-items: center; justify-content: center;">
+            <ui:Label tabindex="0" text="Login" display-tooltip-when-elided="true" name="title-text" enable-rich-text="false" style="justify-content: center; align-items: center; height: auto; width: auto; font-size: 50px; -unity-text-align: middle-center; -unity-font-style: bold-and-italic; position: absolute; top: 30px;" />
+            <ui:Button tabindex="-1" text="Guest Login" display-tooltip-when-elided="true" name="guestLogin-button" class="loginButton" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

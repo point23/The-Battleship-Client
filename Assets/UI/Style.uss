@@ -1,0 +1,38 @@
+.loginButton {
+    height: 100px;
+    width: 300px;
+    background-color: rgb(36, 129, 233);
+    font-size: 50px;
+    justify-content: flex-start;
+    align-items: auto;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+.loginButton:hover {
+    height: 100px;
+    width: 300px;
+    background-color: rgb(108, 176, 253);
+    font-size: 50px;
+    justify-content: flex-start;
+    align-items: auto;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+.loginButton:active {
+    height: 100px;
+    width: 300px;
+    background-color: rgb(39, 104, 178);
+    font-size: 50px;
+    justify-content: flex-start;
+    align-items: auto;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+}

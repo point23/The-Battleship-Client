@@ -1,6 +1,4 @@
 ﻿using Runtime.Common.Abstract;
-using Runtime.Common.Interface;
-using Runtime.Infrastructures.Helper;
 using ThirdParty.SimpleJSON;
 
 namespace Runtime.Common.Responders

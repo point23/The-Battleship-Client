@@ -1,16 +1,17 @@
 ﻿using Runtime.Core;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 namespace Runtime.Common.Responders
 {
     public class LoginDialog : MonoBehaviour
     {
-        public Button btnGuestLogin;
-
+        private VisualElement _root;
+        
         public void Awake()
         {
-            btnGuestLogin.onClick.AddListener(AppManager.instance.Login);
+            _root = GetComponentInChildren<UIDocument>().rootVisualElement;
+            _root.Q<Button>("guestLogin-button").clicked += AppManager.instance.Login;
         }
     }
 }
