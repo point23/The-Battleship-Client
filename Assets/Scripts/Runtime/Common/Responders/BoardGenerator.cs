@@ -12,7 +12,6 @@ namespace Runtime.Common.Responders
             DebugPG13.Log("data", json);
             var board = GenerateAs(json["id"].Value).GetComponent<Board>();
             board.Init(new BoardData(json));
-            board.GenerateGrids();
         }
     }
 }

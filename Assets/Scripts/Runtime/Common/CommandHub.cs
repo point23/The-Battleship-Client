@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Runtime.Common.Interface;
 using Runtime.Infrastructures.Helper;
 using ThirdParty.SimpleJSON;
+using UnityEditor.Experimental.GraphView;
 
 namespace Runtime.Common
 {
@@ -58,6 +59,13 @@ namespace Runtime.Common
             action = json["action"].Value;
             data = json["data"];
         }
+
+        public Command(string responder, string action, JSONNode data)
+        {
+            this.responder = responder;
+            this.action = action;
+            this.data = data;
+        }
     }
 
     public struct CommandList : IEnumerable<Command>
@@ -71,6 +79,16 @@ namespace Runtime.Common
             {
                 list.Add(new Command(json));
             }
+        }
+
+        public CommandList(Command command)
+        {
+            list = new List<Command>() { command };
+        }
+
+        public void Attach(Command command)
+        {
+            list.Add(command);
         }
 
         public IEnumerator<Command> GetEnumerator()

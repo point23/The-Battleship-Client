@@ -1,6 +1,8 @@
 ﻿using Cysharp.Threading.Tasks.Triggers;
+using Runtime.Common;
 using Runtime.Common.Abstract;
 using Runtime.Common.Responders;
+using Runtime.Games;
 using Runtime.Infrastructures.Helper;
 using ThirdParty.SimpleJSON;
 using UnityEngine;
@@ -9,11 +11,13 @@ namespace Runtime.Core
 {
     public class GameManager : CommonManager
     {
+        public bool usingLocalDriver;
+        
         public static GameManager instance;
 
         public BoardGenerator boardGenerator;
-        
-        private GameSyncService _syncService;
+
+        public GameSyncService syncService;
 
         public void Awake()
         {
@@ -28,10 +32,10 @@ namespace Runtime.Core
             
             Init();
         }
-        
+
         public void EnterGame(string uri)
         {
-            _syncService.EnterGameService(uri);
+            syncService.EnterGameService(uri);
         }
 
         public JSONNode TryGetData(string name)
@@ -59,9 +63,9 @@ namespace Runtime.Core
 
         private void InitGameSyncService()
         {
-            _syncService = new GameSyncService();
+            syncService = new GameSyncService();
             
-            _syncService.onEnterGame.AddListener(commandHub.RunCommands);
+            syncService.onEnterGame.AddListener(commandHub.RunCommands);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using Runtime.Core;
 using Runtime.Infrastructures.Helper;
 using Runtime.Utilities;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -60,13 +61,13 @@ namespace Runtime.GameBase
             Collider.size = Size;
             grids = new List<Grid>();
             _coordPolyominosDictionary = new Dictionary<Coord, List<Polyomino>>();
+            
             GeneratePolyominoesHandler();
+            GenerateGrids();
         }
 
-        public void GenerateGrids(int newRows=default, int newCols=default)
+        public void GenerateGrids()
         {
-            rows = newRows == default ? rows : newRows;
-            cols = newCols == default ? cols : newCols;
             for (var i = 0; i < rows; i++)
             {
                 for (var j = 0; j < cols; j++)

@@ -13,14 +13,9 @@ namespace Runtime.GameBase
         public bool isInteractable;
         public List<int> unoccupiedGrids;
 
-        public static BoardData Default
-        {
-            get
-            {
-                var node = JSONNode.Parse("{\"cellSize\":{\"x\":100,\"y\":100},\"rows\":9,\"cols\":9,\"isInteractable\":\"true\",\"unoccupiedGrids\":[]}");
-                return new BoardData(node);
-            }
-        }
+        public static JSONNode DefaultJsonData => JSONNode.Parse("{\"id\":\"\", \"cellSize\":{\"x\":100,\"y\":100},\"rows\":9,\"cols\":9,\"isInteractable\":\"true\",\"unoccupiedGrids\":[]}");
+
+        public static BoardData Default => new BoardData(DefaultJsonData);
 
         public BoardData(JSONNode data)
         {

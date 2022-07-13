@@ -5,8 +5,8 @@ namespace Runtime.Common.Abstract
 {
     public abstract class CommonManager : MonoBehaviour
     {
-        protected DataSource dataSource;
-        protected CommandHub commandHub;
+        public DataSource dataSource;
+        public CommandHub commandHub;
 
         protected void Init()
         {
