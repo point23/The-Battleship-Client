@@ -1,21 +1,15 @@
-﻿using Cysharp.Threading.Tasks.Triggers;
-using Runtime.Common;
-using Runtime.Common.Abstract;
+﻿using Runtime.Common.Abstract;
 using Runtime.Common.Responders;
-using Runtime.Games;
-using Runtime.Infrastructures.Helper;
 using ThirdParty.SimpleJSON;
-using UnityEngine;
 
 namespace Runtime.Core
 {
     public class GameManager : CommonManager
     {
-        public bool usingLocalDriver;
-        
         public static GameManager instance;
 
         public BoardGenerator boardGenerator;
+        public CoinTossRenderer coinTossRenderer;
 
         public GameSyncService syncService;
 
@@ -58,7 +52,7 @@ namespace Runtime.Core
         private void InitCommandHub()
         {
             commandHub.Register("BoardGenerator", boardGenerator);
-            DebugPG13.Log("contains BoardGenerator", commandHub.ContainsResponder("BoardGenerator"));
+            commandHub.Register("CoinTossRenderer", coinTossRenderer);
         }
 
         private void InitGameSyncService()

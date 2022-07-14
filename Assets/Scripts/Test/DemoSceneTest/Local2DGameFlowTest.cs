@@ -14,8 +14,9 @@ namespace Test.DemoSceneTest
             btnEnter.onClick.AddListener(EnterGame);
         }
 
-        private async void EnterGame()
+        private void EnterGame()
         {
+            btnEnter.gameObject.SetActive(false);
             gameDriver.EnterGame();
         }
     }

@@ -1,22 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Runtime.Common.Interface;
 using Runtime.GameBase;
 using Runtime.Infrastructures.Helper;
 using ThirdParty.SimpleJSON;
 using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 using Vector2 = System.Numerics.Vector2;
 
 namespace Runtime.Common.Responders
 {
     public class CoinTossRenderer : MonoBehaviour, ICommandResponder
     {
-        public CoinBehaviour coin;
+        public GameObject coinTossPrefab;
+        public GameObject coinPrefab;
+        
+        public GameObject view;
         private List<TossData> _headTossData;
         private List<TossData> _tailTossData;
         
         public void Awake()
         {
+            view.SetActive(false);
+            
             _headTossData = new List<TossData>() { new TossData
                 (new Vector3(0, 5, 0),
                 new Vector3(0, 600, 0),
@@ -47,10 +55,22 @@ namespace Runtime.Common.Responders
             return UniTask.CompletedTask;
         }
 
-        private void Toss(JSONNode data)
+        private async void Toss(JSONNode data)
         {
+            view.SetActive(true);
+
             var tossData = data["result"].Value == "head" ? PickOne(_headTossData) : PickOne(_tailTossData);
-            coin.Toss(tossData);
+            var coinToss = Instantiate(coinTossPrefab);
+            var coin = Instantiate(coinPrefab, coinToss.transform).GetComponent<CoinBehaviour>();
+            
+            coin.TossAsync(tossData);
+            
+            await UniTask.Delay(TimeSpan.FromSeconds(3f));
+            
+            Destroy(coinToss);
+            Destroy(coin);
+            
+            view.SetActive(false);
         }
 
         private TossData PickOne(List<TossData> list)

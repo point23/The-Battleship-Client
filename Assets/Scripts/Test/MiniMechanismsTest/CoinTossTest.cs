@@ -25,7 +25,7 @@ namespace Test.MiniMechanismsTest
         private void TossCoinRandomly()
         {
             var coin = Instantiate(coinPrefab, coins).GetComponent<CoinBehaviour>();
-            coin.Toss(new TossData(startPos, force, torque));
+            coin.TossAsync(new TossData(startPos, force, torque));
         }
 
         private void ClearExistingCoins()

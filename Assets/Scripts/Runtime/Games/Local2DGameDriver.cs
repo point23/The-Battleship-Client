@@ -2,6 +2,7 @@
 using Runtime.Common.Responders;
 using Runtime.Core;
 using Runtime.GameBase;
+using Runtime.Infrastructures.Helper;
 using ThirdParty.SimpleJSON;
 using UnityEngine;
 
@@ -32,7 +33,12 @@ namespace Runtime.Games
             boardsData.Add(boardDataEnemy);
 
             var commandsGenerateBoards = new Command("BoardGenerator", "Generate", boardsData);
-            syncService.onEnterGame.Invoke(new CommandList(commandsGenerateBoards));
+            var commands = new CommandList(commandsGenerateBoards);
+
+            var coinTossData = JSONNode.Parse("{\"result\":\"head\"}");
+            commands.Attach(new Command("CoinTossRenderer", "Toss", coinTossData));
+            
+            syncService.onEnterGame.Invoke(commands);
         }
     }
 }
