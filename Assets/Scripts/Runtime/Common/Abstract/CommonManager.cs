@@ -15,6 +15,16 @@ namespace Runtime.Common.Abstract
             commandHub.Register("DataSource", dataSource);
             PostInit();
         }
+        
+        public void RegisterNewGameObject(string id, GameObject go)
+        {
+            dataSource.AddNewGameObject(id, go);
+        }
+
+        public GameObject TryGetGameObject(string id)
+        {
+            return dataSource.TryGetGameObject(id);
+        }
 
         protected virtual void PostInit() { }
     }

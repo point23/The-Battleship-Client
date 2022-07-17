@@ -30,13 +30,14 @@ namespace Runtime.GameBase
             get => GridList.All(grid => grid.IsValid);
             set => GridList.ForEach(grid => grid.IsValid = value);
         }
+        public bool IsVisible => data.isVisible;
         public Coord BottomRight => TopLeft + DiagonalVector;
         public List<Coord> GridCoordsInWorldSpace => GridCoords.Select(FromLocalToWorldCoord).ToList();
         private BoundingBox Bounds => data.bounds;
         private int Angle => data.angle;
         private List<Coord> GridCoords => data.gridCoords;
-        private Vector2 DiagonalVector => RotateVectorClockwise(Bounds.ToDiagonalVector(), Angle);
         private int GridsCount => Bounds.height * Bounds.width;
+        private Vector2 DiagonalVector => RotateVectorClockwise(Bounds.ToDiagonalVector(), Angle);
         private List<Grid> GridList => layoutGroup.GetComponentsInChildren<Grid>().ToList();
         private DragDropItemGroup DragDropItemGroup => GetComponent<DragDropItemGroup>();
         private MultiClickItemGroup MultiClickItemGroup => GetComponent<MultiClickItemGroup>();
@@ -61,6 +62,14 @@ namespace Runtime.GameBase
         public void RenderGrids()
         {
             GridList.ForEach(grid => grid.Render());
+        }
+        
+        public void OnDragged(Vector2Int delta)
+        {
+            if (!TryMove(delta)) 
+                return;
+
+            RenderRelocation();
         }
 
         private void Render()
@@ -113,7 +122,7 @@ namespace Runtime.GameBase
                     var coord = new Coord(row, col);
                     var index = Bounds.ConvertCoordToIndex(coord);
                     var isActive = OccupiedGridsIndex.Contains(index);
-                    GridList[index].Init(new GridData(coord, isActive));
+                    GridList[index].Init(new GridData(coord, isActive: isActive, isVisible: IsVisible));
                     GridList[index].GetComponent<DragDropItem>().IsActive = isActive;
                     GridList[index].GetComponent<MultiClickItem>().IsActive = isActive;
                     // DebugPG13.Log(new Dictionary<object, object>()
@@ -135,7 +144,7 @@ namespace Runtime.GameBase
             }
         }
 
-        private bool TryMove(Vector2Int delta)
+        public bool TryMove(Vector2Int delta)
         {
             if (!handler.AnyGridsInBoundsAfterMove(this, delta))
                 return false;
@@ -170,11 +179,8 @@ namespace Runtime.GameBase
 
         #region Event Listeners
 
-        private void OnDragged(Vector2Int delta)
+        public void RenderRelocation()
         {
-            if (!TryMove(delta)) 
-                return;
-            
             OnRelocated();
             CheckGridsValidity();
             RenderGrids();

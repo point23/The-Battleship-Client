@@ -9,6 +9,7 @@ namespace Runtime.Common.Responders
 {
     public class DataSource : ICommandResponder
     {
+        public Dictionary<string, GameObject> gameObjectsDictionary;
         public Dictionary<string, string> linksDictionary;
         public Dictionary<string, JSONNode> assetsDictionary;
 
@@ -16,19 +17,30 @@ namespace Runtime.Common.Responders
         {
             linksDictionary = new Dictionary<string, string>();
             assetsDictionary = new Dictionary<string, JSONNode>();
+            gameObjectsDictionary = new Dictionary<string, GameObject>();
         }
 
-        public void Add(string name, JSONNode data)
+        public void AddNewAsset(string id, JSONNode data)
         {
-            assetsDictionary.Add(name, data);
+            assetsDictionary.Add(id, data);
+        }
+
+        public void AddNewGameObject(string id, GameObject go)
+        {
+            gameObjectsDictionary.Add(id, go);
         }
         
-        public bool Contains(string name)
+        public GameObject TryGetGameObject(string id)
         {
-            return assetsDictionary.ContainsKey(name);
+            return gameObjectsDictionary[id];
         }
 
-        public JSONNode TryGetData(string name)
+        public bool ContainsAsset(string id)
+        {
+            return assetsDictionary.ContainsKey(id);
+        }
+
+        public JSONNode TryGetAsset(string name)
         {
             assetsDictionary.TryGetValue(name, out var value);
             if (value == null)
@@ -38,9 +50,9 @@ namespace Runtime.Common.Responders
             return value;
         }
 
-        public T TryGetData<T>(string name) where T : new()
+        public T TryGetAsset<T>(string name) where T : new()
         {
-            var value = TryGetData(name);
+            var value = TryGetAsset(name);
             return JsonUtility.FromJson<T>(value.Value);
         } 
 

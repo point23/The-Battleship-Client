@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using ThirdParty.SimpleJSON;
 using UnityEngine;
 
 namespace Runtime.GameBase
@@ -46,6 +49,12 @@ namespace Runtime.GameBase
             Col = other.Col;
         }
 
+        public Coord(JSONNode json)
+        {
+            Row = json["x"].AsInt;
+            Col = json["y"].AsInt;
+        }
+
         public void RotateClockwiseAround(Vector2 center, float angle)
         {
             // .(this) <-delta- .(center)
@@ -59,6 +68,19 @@ namespace Runtime.GameBase
             Value = (center + deltaRotated);
         }
 
+        public static Coord Random(int rows, int cols)
+        {
+            var x = UnityEngine.Random.Range(0, rows - 1);
+            var y = UnityEngine.Random.Range(0, cols - 1);
+
+            return new Coord(x, y);
+        }
+
+        public static List<Coord> ReadListFromJson(JSONNode jsonList)
+        {
+            return jsonList.Children.Select(json => new Coord(json)).ToList();
+        }
+        
         #region Convertors
 
         public Vector2 ToVector2()

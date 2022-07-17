@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Runtime.GameBase;
@@ -6,7 +7,7 @@ using ThirdParty.SimpleJSON;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Test
+namespace Test.DemoSceneTest
 {
     public class RandomShipsGenerationTest : MonoBehaviour
     {
@@ -38,6 +39,7 @@ namespace Test
             var board = await GenerateBoard();
             var shipsDataList = FileHandler.ReadListFromJSON<PolyominoData>(TestShipsJsonDataPath);
             board.polyominoesHandler.GeneratePolyominoes(shipsDataList);
+            
             btnGenerate.gameObject.SetActive(false);
             btnWriteShipData.gameObject.SetActive(false);
         }

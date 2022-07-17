@@ -46,6 +46,8 @@ namespace Runtime.Core
             GameManager.instance.EnterGame(uri);
         }
 
+
+
         protected override void PostInit()
         {
             SetPosOfMainCamera(uiCameraPos.position);

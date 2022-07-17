@@ -9,12 +9,14 @@ namespace Runtime.GameBase
         public Coord coord;
         public bool isActive;
         public bool isValid;
+        public bool isVisible;
 
-        public GridData(Coord coord, bool isActive = false, bool isValid = true)
+        public GridData(Coord coord, bool isActive = false, bool isValid = true, bool isVisible = true)
         {
             this.coord = coord;
             this.isActive = isActive;
             this.isValid = isValid;
+            this.isVisible = isVisible;
         }
         
         public GridData(int x, int y)

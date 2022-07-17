@@ -81,7 +81,7 @@ namespace Runtime.Utilities
             if (!IsActive || !IsEnabled)
                 return;
 
-            ToolTipHandler.instance.Generate("rotate", transform);
+            // ToolTipHandler.instance.Generate("rotate", transform);
         }
     }
 }

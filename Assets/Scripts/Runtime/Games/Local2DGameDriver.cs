@@ -2,8 +2,8 @@
 using Runtime.Common.Responders;
 using Runtime.Core;
 using Runtime.GameBase;
-using Runtime.Infrastructures.Helper;
 using ThirdParty.SimpleJSON;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace Runtime.Games
@@ -14,9 +14,11 @@ namespace Runtime.Games
         public CommandHub commandHub;
         public DataSource dataSource;
         public GameSyncService syncService;
+        private static readonly string FleetDataPath = Application.dataPath + "/Resources/Data/fleets_data.json";
 
         public void Awake()
         {
+            Debug.Log(FleetDataPath);
             commandHub = GameManager.instance.commandHub;
             dataSource = GameManager.instance.dataSource;
             syncService = GameManager.instance.syncService;
@@ -24,21 +26,37 @@ namespace Runtime.Games
 
         public void EnterGame()
         {
-            var boardDataUser = BoardData.DefaultJsonData;
-            var boardDataEnemy = BoardData.DefaultJsonData;
-            boardDataUser["id"] = "user";
-            boardDataEnemy["id"] = "enemy";
-            var boardsData = new JSONArray();
-            boardsData.Add(boardDataUser);
-            boardsData.Add(boardDataEnemy);
-
-            var commandsGenerateBoards = new Command("BoardGenerator", "Generate", boardsData);
-            var commands = new CommandList(commandsGenerateBoards);
-
-            var coinTossData = JSONNode.Parse("{\"result\":\"head\"}");
-            commands.Attach(new Command("CoinTossRenderer", "Toss", coinTossData));
+            var userFirst = Random.Range(0, 1) == 0;
+            
+            var commands = new CommandList(_commandGenerateBoards);
+            commands.Add(_commandGenerateShips());
+            
+            // commands.Add(_commandRenderCoinToss(userFirst));
             
             syncService.onEnterGame.Invoke(commands);
         }
+        
+        #region Static Commands
+
+        private readonly Command _commandGenerateBoards =  new("BoardGenerator", "Generate", new JSONArray
+        {
+            BoardData.DefaultJsonDataWithId("user"),
+            BoardData.DefaultJsonDataWithId("enemy")
+        });
+        
+        private static Command _commandGenerateShips()
+        {
+            var file = Resources.Load("Data/fleets_data") as TextAsset;
+            Debug.Log(file!.text);
+            return new Command("PolyominoGenerator", "Generate", JSONNode.Parse(file!.text));
+        }
+        private static Command _commandRenderCoinToss(bool userFirst)
+        {
+            var coinTossData = JSONNode.Parse("{\"result\":\"\"}");
+            coinTossData["result"].Value = userFirst ? "head" : "tail";
+            return new Command("CoinTossRenderer", "Toss", coinTossData);
+        }
+
+        #endregion
     }
 }

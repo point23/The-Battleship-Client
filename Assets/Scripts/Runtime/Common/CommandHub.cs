@@ -70,30 +70,30 @@ namespace Runtime.Common
 
     public struct CommandList : IEnumerable<Command>
     {
-        public List<Command> list;
+        private List<Command> _list;
 
         public CommandList(JSONArray array)
         {
-            list = new List<Command>();
+            _list = new List<Command>();
             foreach (var json in array.Children)
             {
-                list.Add(new Command(json));
+                _list.Add(new Command(json));
             }
         }
 
         public CommandList(Command command)
         {
-            list = new List<Command>() { command };
+            _list = new List<Command> { command };
         }
 
-        public void Attach(Command command)
+        public void Add(Command command)
         {
-            list.Add(command);
+            _list.Add(command);
         }
 
         public IEnumerator<Command> GetEnumerator()
         {
-            return list.GetEnumerator();
+            return _list.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

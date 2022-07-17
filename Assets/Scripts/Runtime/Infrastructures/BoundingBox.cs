@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Runtime.GameBase;
 using Runtime.Infrastructures.Helper;
+using ThirdParty.SimpleJSON;
 using UnityEngine;
 
 namespace Runtime.Utilities
@@ -21,7 +22,13 @@ namespace Runtime.Utilities
             this.width = width;
             this.height = height;
         }
-        
+
+        public BoundingBox(JSONNode json)
+        {
+            width = json["width"].AsInt;
+            height = json["height"].AsInt;
+        }
+
         public BoundingBox(Vector2Int diagonalVector)
         {
             width = Math.Abs(diagonalVector.y) + 1;

@@ -47,7 +47,7 @@ namespace Runtime.GameBase
             onPolyominoRelocatedEvent.Invoke(polyomino);
             RenderPolyominos();
         }
-
+        
         private void RenderPolyominos()
         {
             polyominos.ForEach(p => p.RenderGrids());

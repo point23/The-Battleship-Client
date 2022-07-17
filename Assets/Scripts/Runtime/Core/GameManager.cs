@@ -1,6 +1,7 @@
 ﻿using Runtime.Common.Abstract;
 using Runtime.Common.Responders;
 using ThirdParty.SimpleJSON;
+using UnityEngine;
 
 namespace Runtime.Core
 {
@@ -8,9 +9,13 @@ namespace Runtime.Core
     {
         public static GameManager instance;
 
+        [Header("Generators")]
         public BoardGenerator boardGenerator;
+        public PolyominoGenerator polyominoGenerator;
+        
+        [Header("Renderers")]
         public CoinTossRenderer coinTossRenderer;
-
+        
         public GameSyncService syncService;
 
         public void Awake()
@@ -34,12 +39,12 @@ namespace Runtime.Core
 
         public JSONNode TryGetData(string name)
         {
-            return dataSource.TryGetData(name);
+            return dataSource.TryGetAsset(name);
         }
         
         public T TryGetData<T>(string name) where T : new()
         {
-            return dataSource.TryGetData<T>(name);
+            return dataSource.TryGetAsset<T>(name);
         }
         
         protected override void PostInit()
@@ -53,6 +58,7 @@ namespace Runtime.Core
         {
             commandHub.Register("BoardGenerator", boardGenerator);
             commandHub.Register("CoinTossRenderer", coinTossRenderer);
+            commandHub.Register("PolyominoGenerator", polyominoGenerator);
         }
 
         private void InitGameSyncService()

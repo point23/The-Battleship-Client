@@ -12,6 +12,18 @@ namespace Runtime.GameBase
         
         public Coord Coord => data.coord;
         public bool IsActive => data.isActive;
+
+        public bool IsVisible
+        {
+            get => data.isVisible;
+            set
+            {
+                data.isVisible = value;
+                IsInteractable = value;
+                Render();
+            }
+        }
+        
         public bool IsValid
         {
             get => data.isValid;
@@ -40,10 +52,10 @@ namespace Runtime.GameBase
             IsInteractable = isInteractable;
             BtnGrid.onClick.AddListener(OnClick);
         }
-
+        
         public void Render()
         {
-            if (!IsActive)
+            if (!IsActive || !IsVisible)
             {
                 GridImage.color = new Color();
             }
