@@ -11,10 +11,10 @@ namespace Runtime.Common.Responders
         protected override void GenerateEach(JSONNode json)
         {
             DebugPG13.Log("data", json);
+            
             var board = GenerateAs(json["id"].Value).GetComponent<Board>();
             board.Init(new BoardData(json));
-            
-            GameManager.instance.RegisterNewGameObject(json["id"].Value, board.gameObject);
+            GameManager.instance.RegisterNewGameObject(board.id, board.gameObject);
         }
     }
 }

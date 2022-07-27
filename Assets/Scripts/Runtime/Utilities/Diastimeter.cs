@@ -1,4 +1,5 @@
 ﻿using Runtime.GameBase;
+using Runtime.Infrastructures.Helper;
 using UnityEngine;
 
 namespace Runtime.Utilities
@@ -22,10 +23,7 @@ namespace Runtime.Utilities
             _end = diastimeter._begin;;
         }
 
-        public Diastimeter()
-        {
-            
-        }
+        public Diastimeter() { }
 
         public void Begin(Vector3 position)
         {

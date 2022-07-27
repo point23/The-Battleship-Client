@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Runtime.Infrastructures.Helper;
 using Runtime.Utilities;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,7 +15,7 @@ namespace Runtime.GameBase
     {
         public GridLayoutGroup layoutGroup;
         public GameObject polyominoGridTemplate;
-        [HideInInspector] public PolyominoData data;
+        public PolyominoData data;
         [HideInInspector] public PolyominoesHandler handler;
         [HideInInspector] public UnityEvent<Polyomino> relocatedEvent;
 
@@ -43,7 +44,11 @@ namespace Runtime.GameBase
         private MultiClickItemGroup MultiClickItemGroup => GetComponent<MultiClickItemGroup>();
         private bool AllGridsInBounds => handler.AllGridsInBounds(this);
         private IEnumerable<int> OccupiedGridsIndex => from gridCoord in GridCoords select Bounds.ConvertCoordToIndex(gridCoord);
-
+        private Vector2 CellSize
+        {
+            get => layoutGroup.cellSize;
+            set => layoutGroup.cellSize = value;
+        }
         #endregion
         
         public void Start()
@@ -56,20 +61,13 @@ namespace Runtime.GameBase
         {
             this.handler = handler;
             this.data = data;
+            CellSize = handler.board.CellSize;
             Render();
         }
         
         public void RenderGrids()
         {
             GridList.ForEach(grid => grid.Render());
-        }
-        
-        public void OnDragged(Vector2Int delta)
-        {
-            if (!TryMove(delta)) 
-                return;
-
-            RenderRelocation();
         }
 
         private void Render()
@@ -146,6 +144,7 @@ namespace Runtime.GameBase
 
         public bool TryMove(Vector2Int delta)
         {
+            DebugPG13.Log("delta", delta);
             if (!handler.AnyGridsInBoundsAfterMove(this, delta))
                 return false;
 
@@ -176,14 +175,22 @@ namespace Runtime.GameBase
             data.RotateClockwiseAround(centerPoint);
             transform.Rotate(0,0,-90);
         }
-
-        #region Event Listeners
-
+        
         public void RenderRelocation()
         {
             OnRelocated();
             CheckGridsValidity();
             RenderGrids();
+        }
+
+        #region Event Listeners
+        
+        public void OnDragged(Vector2Int delta)
+        {
+            if (!TryMove(delta)) 
+                return;
+
+            RenderRelocation();
         }
 
         private void OnRotated(MultiClickItem item)

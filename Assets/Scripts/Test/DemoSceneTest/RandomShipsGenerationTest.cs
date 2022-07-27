@@ -36,9 +36,11 @@ namespace Test.DemoSceneTest
 
         private async void GenerateShips()
         {
-            var board = await GenerateBoard();
+            var board1 = await GenerateBoard();
+            var board2 = await GenerateBoard();
             var shipsDataList = FileHandler.ReadListFromJSON<PolyominoData>(TestShipsJsonDataPath);
-            board.polyominoesHandler.GeneratePolyominoes(shipsDataList);
+            board1.polyominoesHandler.GeneratePolyominoes(shipsDataList);
+            board2.polyominoesHandler.GeneratePolyominoes(shipsDataList);
             
             btnGenerate.gameObject.SetActive(false);
             btnWriteShipData.gameObject.SetActive(false);
@@ -48,7 +50,6 @@ namespace Test.DemoSceneTest
         {
             var board = Instantiate(boardTemplate, boardsTrans).GetComponent<Board>();
             board.Init(BoardData.Default);
-            board.GenerateGrids();
             await UniTask.DelayFrame(1);
             return board;
         }

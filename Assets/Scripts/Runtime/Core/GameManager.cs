@@ -11,7 +11,7 @@ namespace Runtime.Core
 
         [Header("Generators")]
         public BoardGenerator boardGenerator;
-        public PolyominoGenerator polyominoGenerator;
+        public FleetGenerator fleetGenerator;
         
         [Header("Renderers")]
         public CoinTossRenderer coinTossRenderer;
@@ -58,7 +58,7 @@ namespace Runtime.Core
         {
             commandHub.Register("BoardGenerator", boardGenerator);
             commandHub.Register("CoinTossRenderer", coinTossRenderer);
-            commandHub.Register("PolyominoGenerator", polyominoGenerator);
+            commandHub.Register("PolyominoGenerator", fleetGenerator);
         }
 
         private void InitGameSyncService()

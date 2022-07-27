@@ -11,7 +11,16 @@ namespace Runtime.GameBase
         #region Properties
         
         public Coord Coord => data.coord;
-        public bool IsActive => data.isActive;
+
+        public bool IsActive
+        {
+            get => data.isActive;
+            set
+            {
+                data.isActive = value;
+                IsVisible = value;
+            }
+        }
 
         public bool IsVisible
         {

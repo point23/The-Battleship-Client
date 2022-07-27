@@ -4,7 +4,6 @@ using System.Linq;
 using Runtime.Core;
 using Runtime.Infrastructures.Helper;
 using Runtime.Utilities;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +11,7 @@ namespace Runtime.GameBase
 {
     public class Board : MonoBehaviour
     {
+        public string id;
         public bool isInteractable;
         public GameObject gridTemplate;
         public GameObject polyominoesHandlerTemplate;
@@ -24,11 +24,11 @@ namespace Runtime.GameBase
         [HideInInspector] public PolyominoesHandler polyominoesHandler;
 
         #region Properties
-        
         private List<Polyomino> Polyominos => polyominoesHandler.polyominos;
         public Bounds Bounds => GetComponent<BoxCollider>().bounds;
-        public BoundingBox BoundingBox => new BoundingBox(cols, rows);
-        private Vector2 CellSize
+        public BoundingBox BoundingBox => new(cols, rows);
+
+        public Vector2 CellSize
         {
             get => gridsLayout.cellSize;
             set => gridsLayout.cellSize = value;
@@ -51,7 +51,8 @@ namespace Runtime.GameBase
         #endregion
         
         public void Init(BoardData data)
-        { 
+        {
+            id = data.id;
             IsInteractable = data.isInteractable;
             CellSize = data.cellSize;
             rows = data.rows;
@@ -97,12 +98,15 @@ namespace Runtime.GameBase
             var deltaX = localPosition.x - grids[0].LocalPosition.x;
             var deltaY = grids[0].LocalPosition.y - localPosition.y;
             var coord = new Coord(  Convert.ToInt32(deltaY / CellSize.y),  Convert.ToInt32(deltaX / CellSize.x));
-            // DebugPG13.Log(new Dictionary<object, object>()
-            // {
-            //     {"deltaX", deltaX},
-            //     {"deltaY", deltaY},
-            //     {"coord", coord.ToJson()}
-            // });
+            DebugPG13.Log(new Dictionary<object, object>
+            {
+                {"board trans local pos", transform.localPosition},
+                {"board trans pos", transform.position},
+                {"grid 0 pos", grids[0].LocalPosition},
+                {"pointer pos", position},
+                {"pointer local pos", localPosition},
+                {"coord", coord.ToJson()}
+            });
             return coord;
         }
 

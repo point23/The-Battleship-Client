@@ -1,10 +1,13 @@
-﻿using Runtime.Common;
+﻿using System;
+using Cysharp.Threading.Tasks;
+using Runtime.Common;
 using Runtime.Common.Responders;
 using Runtime.Core;
 using Runtime.GameBase;
 using ThirdParty.SimpleJSON;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Runtime.Games
 {
@@ -18,22 +21,27 @@ namespace Runtime.Games
 
         public void Awake()
         {
-            Debug.Log(FleetDataPath);
             commandHub = GameManager.instance.commandHub;
             dataSource = GameManager.instance.dataSource;
             syncService = GameManager.instance.syncService;
         }
 
-        public void EnterGame()
+        public async void EnterGame()
+        {
+            var commands = new CommandList(_commandGenerateBoards);
+            gameManager.commandHub.RunCommands(commands);
+
+            await UniTask.DelayFrame(1);
+            
+            commands = new CommandList(_commandGenerateShips());
+            gameManager.commandHub.RunCommands(commands);
+        }
+
+        private void StartGame()
         {
             var userFirst = Random.Range(0, 1) == 0;
+            var commands = new CommandList(_commandRenderCoinToss(userFirst));
             
-            var commands = new CommandList(_commandGenerateBoards);
-            commands.Add(_commandGenerateShips());
-            
-            // commands.Add(_commandRenderCoinToss(userFirst));
-            
-            syncService.onEnterGame.Invoke(commands);
         }
         
         #region Static Commands

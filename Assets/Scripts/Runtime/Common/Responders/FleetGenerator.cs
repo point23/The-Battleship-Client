@@ -6,7 +6,7 @@ using ThirdParty.SimpleJSON;
 
 namespace Runtime.Common.Responders
 {
-    public class PolyominoGenerator : GameObjectGenerator
+    public class FleetGenerator : GameObjectGenerator
     {
         protected override void GenerateEach(JSONNode json)
         {

@@ -49,7 +49,7 @@ namespace Runtime.Utilities
         }
         
         private void OnBeginDrag(DragDropItem chosenOne)
-        { 
+        {
             _canvasGroup.blocksRaycasts = false;
             RenderBeginDrag();
             SetAllItemsExcept(chosenOne, false);

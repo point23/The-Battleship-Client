@@ -7,6 +7,7 @@ namespace Runtime.GameBase
 {
     public class BoardData
     {
+        public string id;
         public Vector2 cellSize;
         public int rows;
         public int cols;
@@ -20,7 +21,7 @@ namespace Runtime.GameBase
         public BoardData(JSONNode data)
         {
             DebugPG13.Log("board id", data["id"]);
-            
+            id = data["id"].Value;
             cellSize = new Vector2(data["cellSize"]["x"].AsFloat, data["cellSize"]["y"].AsFloat);
             rows = data["rows"].AsInt;
             cols = data["cols"].AsInt;

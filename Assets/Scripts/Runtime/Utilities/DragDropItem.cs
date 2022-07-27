@@ -1,4 +1,5 @@
 using System;
+using Runtime.Infrastructures.Helper;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -66,6 +67,7 @@ namespace Runtime.Utilities
         {
             if (!IsActive || !IsEnabled)
                 return;
+            
             _diastimeter.End();
             onEndDragEvent.Invoke(this);
         }
@@ -78,6 +80,8 @@ namespace Runtime.Utilities
             var delta = _diastimeter.CalculateDelta(eventData.position);
             if (!_diastimeter.IsAvailable || delta.sqrMagnitude <= 0)
                 return;
+            
+            DebugPG13.Log("delta", delta);
             onDraggedEvent.Invoke(delta);
             _diastimeter.End();
             _diastimeter.Begin(eventData.position);
